@@ -18,20 +18,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: login.php?error=missing');
         exit;
     }
-
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $executor = new Executor();
-    $result = $executor->loginASPatient($email, $password);
-    if ($result) {
-        $_SESSION['user'] = $result;
-        header('Location: ../view/dashboardAdmin.html');
-        exit;
-    } else {
-        header('Location: login.php?error=invalid');
-        exit;
+    else {
+        if (isset($_POST['email'], $_POST['password'])) {
+            # code...
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+            $executor = new Executor();
+            $result = $executor->loginASPatient($email, $password);
+            if ($result) {
+                $_SESSION['user'] = $result;
+                header('Location: ../view/dashboardAdmin.html');
+                exit;
+            } else {
+                header('Location: login.php?error=invalid');
+                exit;
+            }
+            }
+        
     }
+
+    
 }
+
+
 
 class DatabaseManager {
 private $request;

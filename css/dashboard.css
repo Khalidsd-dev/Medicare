@@ -125,4 +125,81 @@ body {
 .apt {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    gap: 50px;
+    margin: 15px 0;
 }
+
+.apt-card {
+    display: block;
+    width: 90%;
+    height: auto;
+    padding: 30px 20px;
+    border: 1px solid #d9d9d9;
+    border-radius: 15px;
+
+}
+
+.apt-card p {
+    font-size: 0.8rem;
+    color: grey;
+}
+
+.apt-card li {
+    color: rgb(87, 137, 11);
+    margin: 15px 10px;
+}
+
+.apt-card .visit-days {
+    color: black;
+    font-weight: bold;
+}
+
+.schedule-details {
+    display: block;
+    width: 100%;
+    height: auto;
+    padding: 20px;
+    border: 1px solid #aba8a4;
+    border-radius: 15px;
+}
+
+.fields {
+    padding: 5px;
+    display: flex;
+    flex-direction: row; 
+    width: 70%;
+    height: auto; 
+    justify-content: space-between;
+}
+
+.fields-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.fields input#date {
+    width: 100px;
+    height: 20px;
+}
+
+
+.fields input#time {
+    width: 70px;
+    height: 20px;
+    margin-bottom: 5px;
+}
+
+.fields-container button.book-btn {
+    width: 80px;
+    height: 30px;
+    background-color: rgb(5, 67, 125);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 40px;
+}
+
+
+

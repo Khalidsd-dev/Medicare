@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/dashboard.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <title>MediCare | Admin Dashboard</title>
 </head>
 <body>
@@ -14,7 +15,7 @@
             <h1>MediCare</h1>
 
             <ul class="link-lists">
-                <li class="links active"><a href="index.html">Log Out</a></li>
+                <li class="links active"><a href="/php/logout.php">Log Out</a></li>
             </ul>
         </div>
 
@@ -35,6 +36,28 @@
                         <p>Patient ID: p-20847</p>
                     </div>
                 </div>
+
+
+                <div class="side-links">
+                    <div class="side-link">
+                        <i class='bx bx-grid-alt'></i>
+                        <a href="dashboardAdmin.html">Dashboard</a>
+                    </div>
+
+                    <div class="side-link">
+                        <i class='bx bx-grid-alt'></i>
+                        <a href="dashboardAdmin.html">Appointments</a>
+                    </div>
+
+                    <div class="side-link">
+                        <i class='bx bx-grid-alt'></i>
+                        <a href="dashboardAdmin.html">Doctors</a>
+                    </div>
+
+                    <div class="side-link">
+                        <i class='bx bx-grid-alt'></i>
+                        <a href="dashboardAdmin.html">Patients</a>
+                </div>
                 </div>
 
                 <div class="contents">
@@ -44,12 +67,66 @@
                         <div class="apt-container">
                             <h3>Available Doctors</h3>
                             <div class="apt">
+                                <!-- Doctor Card 1 -->
                                 <div class="apt-card">
                                     <h4>Dr. Amara Patel</h4>
                                     <p>Cardiologist</p>
+                                    <div class="visit-time">
+                                        <li><p class="visit-days">Mon-Wed</p></li>
+                                    </div>
                                     <button class="book-btn">Book Now</button>
                                 </div>
+
+                                <!-- Doctor Card 2 -->
+                                 <div class="apt-card">
+                                    <h4>Dr. Amara Patel</h4>
+                                    <p>Cardiologist</p>
+                                    <div class="visit-time">
+                                        <li><p class="visit-days">Mon-Wed</p></li>
+                                    </div>
+                                    <button class="book-btn">Book Now</button>
+                                </div>
+
+                                    <!-- Doctor Card 3 -->
+                                    <div class="apt-card">
+                                        <h4>Dr. Amara Patel</h4>
+                                        <p>Cardiologist</p>
+                                        <div class="visit-time">
+                                            <li><p class="visit-days">Mon-Wed</p></li>
+                                        </div>
+                                        <button class="book-btn">Book Now</button>
+                                    </div>
+                                </div>
                             </div>
+                            <!-- End of Appointment Container-->
+
+
+
+                            <!-- Begining of Schedule Details-->
+                            <div class="schedule-details">
+                                <h3>Schedule Details</h3>
+                                <p>Here you can schedule your appointment at any time that suits you.</p>
+
+                                <div class="fields">
+                                    <div class="fields-container">
+                                        <Label for="date">Date</Label>
+                                        <input type="date" id="date">
+                                    </div>
+
+                                    <div class="fields-container">
+                                        <Label for="time">Time</Label>
+                                        <input type="time" id="time">
+                                    </div>
+
+                                    <div class="fields-container">
+                                        <button class="book-btn">Book now</button>
+                                    </div>
+                                </div>
+                                <p>Select a doctor above to proceed.</p>
+                            </div>
+                            <!-- End of Schedule Details -->
+
+
                         </div>
                     </div>
                 </div>
