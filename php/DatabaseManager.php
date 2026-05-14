@@ -2,6 +2,7 @@
 require_once "database.php";
 require_once "db_connect.php";
 include_once "Executor.php";
+require_once "appointmentManager.php";
 
 session_start();
 
@@ -47,6 +48,7 @@ private $request;
 private $response;
 
 private $database;
+private $appointmentManager;
 
 public function __construct() {
     // The constructor is currently empty, but it can be used to initialize any necessary properties or dependencies in the future.
@@ -139,4 +141,8 @@ public function loadResponseHistory() {
 }
 
 
+
+public function scheduleAppointment() {
+    return $this->appointmentManager->bookAppointment(); // Check functionality of this function
+}
     }

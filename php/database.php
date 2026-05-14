@@ -7,13 +7,12 @@ private $request;
 private $response;
 
 
-public function __construct($request, $response) {
+public function __construct($request) {
     $this->request = $request;
-    $this->response = $response;
 }
 
 
-public function getResponse( ) {
+public function getResponse() {
     return $this->response;
 }
 

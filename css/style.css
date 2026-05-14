@@ -108,7 +108,7 @@ b {
 }
 
 .link-lists a {
-    text-decoration: underline 0 rgba(255, 255, 255, 0);
+    text-decoration: none;
     transition: text-decoration-color 300ms;
     color: #756dd9;
     padding: 0 10px;

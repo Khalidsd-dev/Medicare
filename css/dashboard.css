@@ -32,6 +32,7 @@ body {
     width: 100%;
     left: 0;
     top: 0;
+    bottom: 0;
     height: 100vh;
     background-color: rgb(201, 185, 162);
     position: absolute;
@@ -39,9 +40,10 @@ body {
 
 .side-panel {
     display: block;
-    width: 20%;
+    width: 10%;
     height: 100%;
     margin-top: 70px;
+    margin-left: 10px;
 }
 
 .avatar-sec {
@@ -88,8 +90,8 @@ body {
 
 .contents {
     display: block;
-    width: 80%;
-    height: 100%;
+    width: 85%;
+    height: 100vh;
     background-color: rgb(255, 255, 255);
     border: 1.8px solid rgb(206, 206, 206);
     position: absolute;
@@ -101,7 +103,7 @@ body {
 .contents-container {
     display: block;
     width: 80%;
-    height: 100vh;
+    height: 100%;
     margin-top: 70px;
     margin-left: 20px;
     margin-bottom: 10px;
@@ -201,5 +203,34 @@ body {
     margin-top: 40px;
 }
 
+.side-links {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    height: 100vh;
+}
 
+.side-link {
+    display: flex;
+    height: auto;
+    width: 100%;
+    gap: 10px;
+}
 
+.side-link a {
+    text-decoration: none;
+    color: black;
+}
+
+.counter {
+    width: 50px;
+    height: 20px;
+    border-radius: 15px;
+    background-color: rgb(48, 120, 144);
+    margin-left: 50%;
+}
+.side-link .appt-count {
+    color: #fff;
+    font-weight: normal;
+}
