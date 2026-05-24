@@ -1,9 +1,15 @@
 <?php
 require_once "DatabaseManager.php";
+require_once "Executor.php";
+
+
 session_start();
+
+session_unset();
 session_destroy();
-echo "
-<p> User has been logout of account!</p>
-";
+
 header("location: ../index.html");
+exit();
+
+
 ?>

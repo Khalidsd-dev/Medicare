@@ -1,4 +1,5 @@
 <?php
+require_once "bookService.php";
 
 class appointmentManager implements bookService
 {
@@ -6,7 +7,7 @@ class appointmentManager implements bookService
 private $user;
 private $date;
 private $time;
-private $appointment = [];
+private $appointments = [];
 
  public function __construct($user, $date, $time) {
         $this->user = $user;
@@ -16,9 +17,13 @@ private $appointment = [];
 
     #[Override]
     public function bookAppointment() {
-        $booked = $this->__construct($this->user, $this->date, $this->time);
+        try {
+            $bookAppointment = $this->__construct($this->user, $this->date, $this->time);
 
-        $this->appointment = $booked;
+            $this->appointments[] = $bookAppointment;
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+        }
     }
     
 

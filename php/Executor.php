@@ -1,6 +1,7 @@
 <?php
 include_once 'DatabaseManager.php';
 
+
 class Executor {
     public $databaseManager;
 
@@ -33,7 +34,10 @@ class Executor {
         return $this->databaseManager->ConnectToDatabase();
     }
 
+    
+    
 }
+
 
 
 ?>

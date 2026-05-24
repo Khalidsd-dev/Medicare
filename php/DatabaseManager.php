@@ -4,7 +4,7 @@ require_once "db_connect.php";
 include_once "Executor.php";
 require_once "appointmentManager.php";
 
-session_start();
+
 
 /**
  * This file defines the DatabaseManager class, 
@@ -14,32 +14,7 @@ session_start();
  * request history, and response history, which can be implemented in the future as needed.
  * 
  */
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isset($_POST['email']) || !isset($_POST['password'])) {
-        header('Location: login.php?error=missing');
-        exit;
-    }
-    else {
-        if (isset($_POST['email'], $_POST['password'])) {
-            # code...
-            $email = $_POST['email'];
-            $password = $_POST['password'];
-            $executor = new Executor();
-            $result = $executor->loginASPatient($email, $password);
-            if ($result) {
-                $_SESSION['user'] = $result;
-                header('Location: ../view/dashboardAdmin.html');
-                exit;
-            } else {
-                header('Location: login.php?error=invalid');
-                exit;
-            }
-            }
-        
-    }
 
-    
-}
 
 
 
@@ -71,7 +46,9 @@ public function loginToDatabaseAsPatientWithCredentials($email, $password) {
     try {
         $pdo = require __DIR__ . '/db_connect.php';
         $stmt = $pdo->prepare("SELECT * FROM user WHERE LOWER(user_email) = LOWER(?) AND user_password = ?");
-        $stmt->execute([$email, $password]);
+        $stmt->bindparam(1, $email);
+        $stmt->bindparam(2, $password);
+        $stmt->execute();
         if ($stmt->rowCount() > 0) {
            return $stmt->fetch();
         }
@@ -123,7 +100,11 @@ public function StoreUserData($userData) {
     // This method is currently a placeholder and does not have an implementation.
     // It can be used in the future to store user data in the database or other storage systems.
 
+
 }
+
+
+
 
 public function loadUserData() {
     // This method is currently a placeholder and does not have an implementation.

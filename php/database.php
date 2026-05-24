@@ -7,8 +7,8 @@ private $request;
 private $response;
 
 
-public function __construct($request) {
-    $this->request = $request;
+public function __construct() {
+    // The constructor is currently empty, but it can be used to initialize any necessary properties or dependencies in the future.
 }
 
 
@@ -20,10 +20,7 @@ public function getRequest() {
     return $this->request;
 }
 
-public function ResponseWithJson($data) {
-    header('Content-Type: application/json');
-    echo json_encode($data);
-}
+
 
 public function loginToDatabase() {
     try {

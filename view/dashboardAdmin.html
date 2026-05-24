@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/dashboard.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <title>MediCare | Admin Dashboard</title>
@@ -15,7 +14,7 @@
             <h1>MediCare</h1>
 
             <ul class="link-lists">
-                <li class="links"><a href="/php/logout.php">Log Out</a></li>
+                <a class="links" id="logoutbtn" href="../php/logout.php">Log Out</a>
             </ul>
         </div>
 
@@ -30,10 +29,10 @@
                         
                     </div>
                     <div class="avatar-name">
-                        <h3>Jamie Davids</h3>
+                        <h3 id="user_name"></h3>
                     </div>
                     <div class="avatar-id">
-                        <p>Patient ID: p-20847</p>
+                        <p id="patient_id"></p>
                     </div>
                 </div>
 
@@ -55,11 +54,12 @@
                     <div class="side-link">
                         <i class='bx bx-grid-alt'></i>
                         <a href="dashboardAdmin.html">History</a>
-                    </div>
-
-                    
+                    </div> 
+                </div>
                 </div>
 
+
+                <!--- Contents Panel-->
                 <div class="contents">
                     <div class="contents-container">
                             <h2>Book an appointment</h2>
@@ -72,9 +72,9 @@
                                     <h4>Dr. Amara Patel</h4>
                                     <p>Cardiologist</p>
                                     <div class="visit-time">
-                                        <li><p class="visit-days">Mon-Wed</p></li>
+                                        <p class="visit-days">Mon-Wed</p>
                                     </div>
-                                    <button class="book-btn">Book Now</button>
+                                    <button class="book-btn">Select</button>
                                 </div>
 
                                 <!-- Doctor Card 2 -->
@@ -82,9 +82,9 @@
                                     <h4>Dr. Amara Patel</h4>
                                     <p>Cardiologist</p>
                                     <div class="visit-time">
-                                        <li><p class="visit-days">Mon-Wed</p></li>
+                                        <p class="visit-days">Mon-Wed</p>
                                     </div>
-                                    <button class="book-btn">Book Now</button>
+                                    <button class="book-btn">Select</button>
                                 </div>
 
                                     <!-- Doctor Card 3 -->
@@ -92,9 +92,9 @@
                                         <h4>Dr. Amara Patel</h4>
                                         <p>Cardiologist</p>
                                         <div class="visit-time">
-                                            <li><p class="visit-days">Mon-Wed</p></li>
+                                            <p class="visit-days">Mon-Wed</p>
                                         </div>
-                                        <button class="book-btn">Book Now</button>
+                                        <button class="book-btn">Select</button>
                                     </div>
                                 </div>
                             </div>
@@ -109,12 +109,12 @@
 
                                 <div class="fields">
                                     <div class="fields-container">
-                                        <Label for="date">Date</Label>
+                                        <label for="date">Date</label>
                                         <input type="date" id="date">
                                     </div>
 
                                     <div class="fields-container">
-                                        <Label for="time">Time</Label>
+                                        <label for="time">Time</label>
                                         <input type="time" id="time">
                                     </div>
 
@@ -126,23 +126,24 @@
                             </div>
                             <!-- End of Schedule Details -->
 
+                            <div class="appointments">
+                                <h3>Scheduled Appoinments</h3>
 
-                        </div>
-
-                        <div class="Appointments">
-                            <h3>Scheduled Appoinments</h3>
-
-                            <div class="Scheduled-appointments">
+                            <div class="scheduled-appointments">
                                 <p>No booked appointments</p>
                             </div>
                         </div>
+                        </div>
+
+                        
                     </div>
 
-                </div>
                 
             </div>
         </div>
 
     </div>
+
+    <script src="../js/script.js"></script>
 </body>
 </html>
