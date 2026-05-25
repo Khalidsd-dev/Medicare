@@ -34,6 +34,10 @@ class Executor {
         return $this->databaseManager->ConnectToDatabase();
     }
 
+    public function fetchAllAppointments() {
+        return $this->databaseManager->fetchAllAppointments();
+    }
+
     
     
 }

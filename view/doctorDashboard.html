@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <title>Medicare | Doctor Dashboard</title>
+</head>
+<body>
+
+    <div class="main-container">
+
+        <div class="dashboard-container">
+            <div class="side-panel">
+                <div class="avatar-sec">
+                    <div class="avatar-icon">
+                        <span class="avatar-icon-img">JD</span>
+                    </div>
+                    <h3 class="avatar-name" id="doc_name">Dr. John Doe</h3>
+                    <p class="doc-id">Doctor ID: 12345</p>
+                </div>
+                <div class="side-links">
+                    <div class="side-link">
+                        <i class='bx bxs-dashboard'></i>
+                        <a href="#">Dashboard</a>
+                    </div>
+                    <div class="side-link">
+                        <i class='bx bxs-calendar'></i>
+                        <a href="#">Appointments</a>
+                        <div class="counter">
+                            <span class="appt-count">2223</span>
+                        </div>
+                    </div>
+                    <div class="side-link">
+                        <i class='bx bxs-file-medical'></i>
+                        <a href="#">Medical Records</a>
+                    </div>
+                    <div class="side-link">
+                        <i class='bx bxs-message'></i>
+                        <a href="#">Messages</a>
+                    </div>
+                    <div class="side-link">
+                        <i class='bx bx-log-out'></i>
+                        <a href="../php/logout.php">Log Out</a>
+                    </div>
+                </div>
+            </div>
+            <div class="contents">
+                <div class="contents-container">
+                
+                    <h2>Doctor Dashboard</h2>
+                    <p>Welcome to your dashboard doctor!</p>
+                    
+                    <hr>
+
+                    <!-- Search Bar -->
+                     <div class="search-area">
+                        <div class="search-bar">
+                            <i class='bx bx-search'></i>
+                            <input class="searchbar" type="text" placeholder="Search patients...">
+                            <button class="search-btn">Search</button>
+                        </div>
+
+                        <div class="filter">
+                            <i class='bx bx-filter-alt'></i>
+                            <select class="filter-options">
+                                <option value="">Filter by</option>
+                                <option value="name">Name</option>
+                                <option value="id">Patient ID</option>
+                                <option value="doctor">Doctor</option>
+                                <option value="date">Appointment Date</option>
+                            </select>
+                        </div>
+                        
+                     </div>
+
+                     <hr>
+
+
+                     <!-- Patient List -->
+
+                     <div class="patient-list">
+                        
+                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

@@ -10,19 +10,13 @@ document.addEventListener('DOMContentLoaded', function() {
     fetchUserData();
 });
 
-
-
 // logout Logic
 
-const logoutbtn = document.getElementById(logoutbtn);
+const logoutbtn = document.getElementById('logoutbtn');
 
 logoutbtn.addEventListener("click", () => {
     window.location.href("../php/logout.php");
 });
-
-
-
-
 
 
 

@@ -18,6 +18,7 @@ body {
 
 .main-container {
     min-height: 100vh;
+    Background-color: rgb(201, 185, 162);
 }
 
 .dashboard-container {

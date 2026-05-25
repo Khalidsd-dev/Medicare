@@ -45,7 +45,7 @@ public function ConnectToDatabase() {
 public function loginToDatabaseAsPatientWithCredentials($email, $password) {
     try {
         $pdo = require __DIR__ . '/db_connect.php';
-        $stmt = $pdo->prepare("SELECT * FROM user WHERE LOWER(user_email) = LOWER(?) AND user_password = ?");
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE LOWER(user_email) = LOWER(?) AND user_password = ?");
         $stmt->bindparam(1, $email);
         $stmt->bindparam(2, $password);
         $stmt->execute();
@@ -87,7 +87,7 @@ public function loginToDatabaseAsAdminWithCredentials($adminID, $password) {
 public function SaveUserCreadentials($email, $password) {    
     try {
         $pdo = require __DIR__ . '/db_connect.php';
-        $stmt = $pdo->prepare("INSERT INTO user (user_email, user_password) VALUES (?,?)");
+        $stmt = $pdo->prepare("INSERT INTO users (user_email, user_password) VALUES (?,?)");
         $stmt->execute([$email, $password]);
         return $stmt->fetch();
     } catch (\Throwable $th) {
@@ -126,4 +126,45 @@ public function loadResponseHistory() {
 public function scheduleAppointment() {
     return $this->appointmentManager->bookAppointment(); // Check functionality of this function
 }
+
+
+
+public function viewAppointments($patientId) {
+    try {
+        $pdo = require_once __DIR__ . '/db_connect.php';
+        $stmt = $pdo->prepare("SELECT * FROM appointments WHERE patient_id = ?");
+        $stmt->execute([$patientId]);
+
+        if($stmt->rowCount() > 0) {
+            return $stmt->fetchAll();
+        } else {
+            return false; // No appointments found
+        }
+    } catch (\Throwable $th) {
+        //throw $th;
+        die("Database connection failed: " . $th->getMessage());
     }
+}
+
+// This method fetches all appointments from the database, regardless of the patient ID. 
+// It can be used for administrative purposes or for doctors to view all appointments.
+public function fetchAllAppointments() {
+    try {
+        $pdo = require_once __DIR__ . '/db_connect.php';
+        $stmt = $pdo->prepare("SELECT * FROM appointments");
+        $stmt->execute();
+
+        if($stmt->rowCount() > 0) {
+            return $stmt->fetchAll();
+        } else {
+            return false; // No appointments found
+        }
+    } catch (\Throwable $th) {
+        //throw $th;
+        die("Database connection failed: " . $th->getMessage());
+    }
+}
+
+
+
+}

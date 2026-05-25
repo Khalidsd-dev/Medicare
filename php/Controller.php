@@ -33,7 +33,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
         $_SESSION['USER_GENDER'] = $loginResult['user_gender'];
 
         // Redirect to Dashboard
-        header("location: ../view/dashboardAdmin.html");
+        header("location: ../view/patientDashboard.html");
         exit();
 
     } else {
