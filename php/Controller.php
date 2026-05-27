@@ -14,33 +14,29 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     
     $executorService = new Executor();
     $loginResult = $executorService->loginASPatient($email, $password);
-
+    $Initials = $initialsData['initials'] ?? strtoupper(
+            $loginResult['first_name'][0] . $loginResult['last_name'][0]
+        );
 // if loginresult fetch array contains email and password that match the input, then login successful, else login failed
 
-    if (
-        $loginResult && 
-        $loginResult['user_email'] === $email && 
-        $loginResult['user_password'] === $password
-        ) {
+   if ($loginResult) {
 
-        session_regenerate_id(); // Regenerate session ID to prevent session fixation attacks
-        
-        $_SESSION['LOGGED_IN_USER'] =  true; // Store the logged-in user's email in the session
-        $_SESSION['USER_ID'] = $loginResult['user_id']; // Store the logged-in user's ID in the session
-        $_SESSION['USER_EMAIL'] = $email; // Store the logged-in user's email in the session
-        $_SESSION['USER_NAME'] = $loginResult['user_name']; // Store the logged-in user's name in the session
-        $_SESSION['USER_SURNAME'] = $loginResult['user_surname'];
-        $_SESSION['USER_GENDER'] = $loginResult['user_gender'];
+    session_regenerate_id();
 
-        // Redirect to Dashboard
-        header("location: ../view/patientDashboard.html");
-        exit();
+    $_SESSION['LOGGED_IN_USER'] = true;
+    $_SESSION['USER_ID'] = $loginResult['user_id'];
+    $_SESSION['USER_EMAIL'] = $loginResult["email"];
+    $_SESSION['USER_NAME'] = $loginResult['first_name'];
+    $_SESSION['USER_SURNAME'] = $loginResult['last_name'];
+    $_SESSION["USER_INITIALS"] = $Initials
+    ;
+    header("location: ../view/patientDashboard.html");
+    exit();
 
-    } else {
-        // Login failed, redirect back to the login page with an error message
-        header("Location: login.php?error=invalid");
-        exit();
-    }
+} else {
+    header("Location: login.php?error=invalid");
+    exit();
+}
 } else {
 
     // Missing email or password, redirect back to the login page with an error message 

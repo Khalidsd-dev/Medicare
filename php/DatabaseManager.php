@@ -45,27 +45,39 @@ public function ConnectToDatabase() {
 public function loginToDatabaseAsPatientWithCredentials($email, $password) {
     try {
         $pdo = require __DIR__ . '/db_connect.php';
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE LOWER(user_email) = LOWER(?) AND user_password = ?");
-        $stmt->bindparam(1, $email);
-        $stmt->bindparam(2, $password);
-        $stmt->execute();
-        if ($stmt->rowCount() > 0) {
-           return $stmt->fetch();
+
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
+        $stmt->execute([$email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Had an bug which I found the culprit with this debug eppression
+        // var_dump([
+        //     "DB_ROLE" => $user['user_role'] ?? null,
+        //     "INPUT_ROLE_EXPECTED" => "PATIENT",
+        //     "DB_PASSWORD" => $user['password'] ?? null,
+        //     "INPUT_PASSWORD" => $password
+        // ]);
+        // exit;
+
+        if (!$user && $user['user_role'] !== 'PATIENT' && $user['password'] !== $password) {
+            # code...
+            return false;
         }
-        else {
-            return false; // No matching user found
-        }
-        
+        return $user;
+
     } catch (Exception $e) {
-        die("Database connection failed: " . $e->getMessage());
+        die($e->getMessage());
     }
 }
 
-public function loginToDatabaseAsDoctorWithCredentials($docID, $password) {
+
+
+
+public function loginToDatabaseAsDoctorWithCredentials($email, $password) {
     try {
         $pdo = require __DIR__ . '/db_connect.php';
         $stmt = $pdo->prepare("SELECT * FROM doctors WHERE docID = ? AND password = ?");
-        $stmt->execute([$docID, $password]);
+        $stmt->execute([$email, $password]);
         return $stmt->fetch();
     } catch (Exception $e) {
         die("Database connection failed: " . $e->getMessage());
@@ -73,7 +85,7 @@ public function loginToDatabaseAsDoctorWithCredentials($docID, $password) {
 }
 
 
-public function loginToDatabaseAsAdminWithCredentials($adminID, $password) {
+public function loginToDatabaseAsAdminWithCredentials($email, $password) {
     try {
         $pdo = require __DIR__ . '/db_connect.php';
         $stmt = $pdo->prepare("SELECT * FROM admins WHERE adminId = ? AND password = ?");

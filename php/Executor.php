@@ -38,6 +38,7 @@ class Executor {
         return $this->databaseManager->fetchAllAppointments();
     }
 
+   
     
     
 }

@@ -10,13 +10,14 @@ if (isset($_SESSION['LOGGED_IN_USER']) && $_SESSION['LOGGED_IN_USER'] === true) 
         'user_id' => $_SESSION['USER_ID'],
         'user_name' => $_SESSION['USER_NAME'],
         'user_surname' => $_SESSION['USER_SURNAME'],
-        'user_email' => $_SESSION['USER_EMAIL']
+        'user_email' => $_SESSION['USER_EMAIL'],
+        'user_initials' => $_SESSION['USER_INITIALS']
     ]);
 } else {
     http_response_code(401); // Set HTTP status code to 401 Unauthorized
 
     echo json_encode([
-        'error' => 'UUser not logged in'
+        'error' => 'User not logged in'
     ]);
 }
 

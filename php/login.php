@@ -37,7 +37,7 @@ if (isset($_GET['error'])) {
       <h4>We are <span>Medicare</span></h4>
       <p>Welcome back! Log in to your account to view your appointments:</p>
       <div class="floating-label">
-        <input placeholder="Email" type="email" name="email" id="email" autocomplete="off">
+        <input placeholder="Email" type="email" name="email" id="email" autocomplete>
         <label for="email">Email:</label>
         <div class="icon">
 
@@ -54,7 +54,7 @@ if (isset($_GET['error'])) {
         </div>
       </div>
       <div class="floating-label">
-        <input placeholder="Password" type="password" name="password" id="password" autocomplete="off">
+        <input placeholder="Password" type="password" name="password" id="password" autocomplete>
         <label for="password">Password:</label>
         <div class="icon">
           

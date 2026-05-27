@@ -5,6 +5,7 @@
 
 const userName = document.getElementById('user_name');
 const patientId = document.getElementById('patient_id');
+const patientInitials = document.getElementById('initials');
 
 document.addEventListener('DOMContentLoaded', function() {
     fetchUserData();
@@ -32,6 +33,7 @@ function fetchUserData() {
 
         userName.innerHTML = data.user_name + ' ' + data.user_surname;
         patientId.innerHTML = "Patient ID: p-" + data.user_id;
+        patientInitials.innerHTML = data.user_initials;
     })
     .catch(error => {
         console.error('Error fecthing user data:', error);
