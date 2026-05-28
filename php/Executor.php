@@ -13,12 +13,12 @@ class Executor {
         return $this->databaseManager->loginToDatabaseAsPatientWithCredentials($email, $password);
     }
 
-    public function loginASDoctor($docID, $password) {
-        return $this->databaseManager->loginToDatabaseAsDoctorWithCredentials($docID, $password);
+    public function loginASDoctor($email, $password) {
+        return $this->databaseManager->loginToDatabaseAsDoctorWithCredentials($email, $password);
     }
 
-    public function loginASAdmin($adminID, $password) {
-        return $this->databaseManager->loginToDatabaseAsAdminWithCredentials($adminID, $password);
+    public function loginASAdmin($email, $password) {
+        return $this->databaseManager->loginToDatabaseAsAdminWithCredentials($email, $password);
     }
 
     public function saveUserCredentials($email, $password) {
@@ -29,10 +29,6 @@ class Executor {
         return $this->databaseManager->StoreUserData($userData);
     }
 
-
-    public function EstablishDatabaseConnection() {
-        return $this->databaseManager->ConnectToDatabase();
-    }
 
     public function fetchAllAppointments() {
         return $this->databaseManager->fetchAllAppointments();

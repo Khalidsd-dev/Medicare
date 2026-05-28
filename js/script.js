@@ -1,41 +1,54 @@
-// DOM Loaded event listener to ensure the script runs after the DOM is fully loaded
-// DOMContentLoaded event listener to ensure the script runs after the DOM is fully loaded
+// Run script after DOM loads
+document.addEventListener('DOMContentLoaded', function () {
 
+    // User Elements
+    const userName = document.getElementById('user_name');
+    const userId = document.getElementById('user_id');
+    const userInitials = document.getElementById('initials');
 
+    // Logout Button
+    const logoutbtn = document.getElementById('logoutbtn');
 
-const userName = document.getElementById('user_name');
-const patientId = document.getElementById('patient_id');
-const patientInitials = document.getElementById('initials');
-
-document.addEventListener('DOMContentLoaded', function() {
+    // Fetch User Data
     fetchUserData();
+
+
+
+    // Fetch User Data Function
+    function fetchUserData() {
+
+        fetch('../php/api.php')
+            .then(response => response.json())
+
+            .then(data => {
+
+                // Handle API errors
+                if (data.error) {
+                    console.log(data.error);
+                    return;
+                }
+
+                // Populate Dashboard
+                userName.textContent =
+                    data.user_name + ' ' + data.user_surname;
+
+                userId.textContent =
+                    "ID: " + data.user_id;
+
+                userInitials.textContent =
+                    data.user_initials;
+
+                // Role Debugging
+                console.log("USER ROLE:", data.user_role);
+
+            })
+
+            .catch(error => {
+                console.error(
+                    'Error fetching user data:',
+                    error
+                );
+            });
+    }
+
 });
-
-// logout Logic
-
-const logoutbtn = document.getElementById('logoutbtn');
-
-logoutbtn.addEventListener("click", () => {
-    window.location.href("../php/logout.php");
-});
-
-
-
-// This function is used to fetch data from the api/json ednpoint and populate the dashboard with user-specific information
-function fetchUserData() {
-    fetch('../php/api.php')
-    .then(response => response.json())
-    .then(data => {
-        if (data.error) {
-            console.log(data.error)
-            return;
-        }
-
-        userName.innerHTML = data.user_name + ' ' + data.user_surname;
-        patientId.innerHTML = "Patient ID: p-" + data.user_id;
-        patientInitials.innerHTML = data.user_initials;
-    })
-    .catch(error => {
-        console.error('Error fecthing user data:', error);
-    });
-}

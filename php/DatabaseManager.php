@@ -38,9 +38,7 @@ doctors, and admins. Each login method connects to the database and retrieves us
 
 
 
-public function ConnectToDatabase() {
-       return $this->database->loginToDatabase();
-}
+
 
 public function loginToDatabaseAsPatientWithCredentials($email, $password) {
     try {
@@ -59,11 +57,11 @@ public function loginToDatabaseAsPatientWithCredentials($email, $password) {
         // ]);
         // exit;
 
-        if (!$user && $user['user_role'] !== 'PATIENT' && $user['password'] !== $password) {
+        if ($user && $user['user_role'] === 'PATIENT' && $user['password'] === $password) {
             # code...
-            return false;
+            return $user;
         }
-        return $user;
+        return false;
 
     } catch (Exception $e) {
         die($e->getMessage());
@@ -76,9 +74,19 @@ public function loginToDatabaseAsPatientWithCredentials($email, $password) {
 public function loginToDatabaseAsDoctorWithCredentials($email, $password) {
     try {
         $pdo = require __DIR__ . '/db_connect.php';
-        $stmt = $pdo->prepare("SELECT * FROM doctors WHERE docID = ? AND password = ?");
-        $stmt->execute([$email, $password]);
-        return $stmt->fetch();
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? LIMIT 1");
+        $stmt->execute([$email]);
+        $doctor = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$doctor && $doctor['user_role'] !== "DOCTOR" && $doctor['password'] !== trim($password)) {
+            return false;
+        }
+        if ($doctor['user_role'] === 'PATIENT' || $doctor['user_role'] === 'ADMIN') {
+            return false;
+        }
+
+        return $doctor;
+
     } catch (Exception $e) {
         die("Database connection failed: " . $e->getMessage());
     }
@@ -88,9 +96,17 @@ public function loginToDatabaseAsDoctorWithCredentials($email, $password) {
 public function loginToDatabaseAsAdminWithCredentials($email, $password) {
     try {
         $pdo = require __DIR__ . '/db_connect.php';
-        $stmt = $pdo->prepare("SELECT * FROM admins WHERE adminId = ? AND password = ?");
-        $stmt->execute([$adminID, $password]);
-        return $stmt->fetch();
+        $stmt = $pdo->prepare("SELECT * FROM admins WHERE email = ? LIMIT 1");
+        $stmt->execute([$email]);
+
+        $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+
+
+        if ($admin && $admin['user_role'] === 'ADMIN' && $admin['password'] === $password) {
+            return $admin;
+        }
+
+        return false;
     } catch (Exception $e) {
         die("Database connection failed: " . $e->getMessage());
     }
