@@ -17,6 +17,7 @@ try {
     $appointments = [];
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,9 +56,9 @@ try {
 
                     <div class="side-link">
                         <i class='bx bx-task'></i>
-                        <a href="dashboardAdmin.html">Appointments</a>
+                        <a href="#appointments-section" class="route-link" data-route="appointments">Appointments</a>
                             <div class="counter">
-                                <span class="appt-count">3</span>
+                                <span class="appt-count">0</span>
                             </div>
                     </div>
 
@@ -109,7 +110,7 @@ try {
                         </div>
                         <!-- End of Schedule Details -->
 
-                            <div class="appointments">
+                            <div class="appointments" id="appointments-section">
                                 <h3>Scheduled Appoinments</h3>
 
                             <div class="scheduled-appointments">

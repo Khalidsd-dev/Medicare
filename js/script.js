@@ -28,17 +28,35 @@ document.addEventListener('DOMContentLoaded', function () {
     const medicalRecordTreatment = document.getElementById('medical-record-treatment');
     const medicalRecordFeedback = document.getElementById('medical-record-feedback');
     const routeLinks = document.querySelectorAll('.route-link');
+
+ // Route to pages
     const routePages = {
         dashboard: document.getElementById('route-dashboard'),
         appointments: document.getElementById('route-appointments'),
+        'user-access': document.getElementById('route-user-access'),
         'medical-records': document.getElementById('route-medical-records'),
+        settings: document.getElementById('route-settings'),
         messages: document.getElementById('route-messages')
     };
+
     const summaryPending = document.getElementById('summary-pending');
     const summaryConfirmed = document.getElementById('summary-confirmed');
     const summaryCompleted = document.getElementById('summary-completed');
+    const userCountPatients = document.getElementById('user-count-patients');
+    const userCountDoctors = document.getElementById('user-count-doctors');
+    const userCountAdmins = document.getElementById('user-count-admins');
+    const adminUserAccessTable = document.getElementById('admin-user-access-table');
+    const settingsList = document.getElementById('settings-list');
+    const themeSelect = document.getElementById('theme-select');
+    const accentColorInput = document.getElementById('accent-color');
+    const cardRadiusInput = document.getElementById('card-radius');
+    const cardRadiusValue = document.getElementById('card-radius-value');
+    const applyThemeBtn = document.getElementById('apply-theme-btn');
+    const resetThemeBtn = document.getElementById('reset-theme-btn');
+    const currentThemeLabel = document.getElementById('current-theme');
 
     const isDoctorPage = window.location.pathname.includes('doctorDashboard');
+    const isAdminPage = window.location.pathname.includes('adminDashboard');
     const isPatientPage = window.location.pathname.includes('patientDashboard');
     let selectedDoctor = null;
     let doctorAppointmentCache = [];
@@ -59,8 +77,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    if (isDoctorPage || isAdminPage || isPatientPage) {
+        setupRouteNavigation();
+    }
+
+    if (isAdminPage) {
+        setupThemeControls();
+        loadStoredTheme();
+    }
+
     if (isDoctorPage) {
-        setupDoctorRouting();
         fetchDoctorAppointments();
 
         if (searchBtn) {
@@ -246,6 +272,214 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.error('Error fetching doctor appointments:', error);
                 doctorAppointments.innerHTML = '<p>Unable to load appointments.</p>';
             });
+    }
+
+    function fetchAdminOverview() {
+        fetch('../php/getAdminOverview.php')
+            .then(response => response.json())
+            .then(data => {
+                if (!data || data.error) {
+                    console.error('Unable to load admin overview:', data?.error);
+                    return;
+                }
+
+                if (data.appointment_counts) {
+                    if (summaryPending) summaryPending.textContent = (data.appointment_counts.REQUESTED || 0).toString();
+                    if (summaryConfirmed) summaryConfirmed.textContent = (data.appointment_counts.CONFIRMED || 0).toString();
+                    if (summaryCompleted) summaryCompleted.textContent = (data.appointment_counts.COMPLETED || 0).toString();
+                }
+
+                if (data.user_counts) {
+                    if (userCountPatients) userCountPatients.textContent = (data.user_counts.PATIENT || 0).toString();
+                    if (userCountDoctors) userCountDoctors.textContent = (data.user_counts.DOCTOR || 0).toString();
+                    if (userCountAdmins) userCountAdmins.textContent = (data.user_counts.ADMIN || 0).toString();
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching admin overview:', error);
+            });
+    }
+
+    function fetchAdminUsers() {
+        if (!adminUserAccessTable) return;
+
+        adminUserAccessTable.innerHTML = '<p>Loading user access data...</p>';
+
+        fetch('../php/getAdminUsers.php')
+            .then(response => response.json())
+            .then(data => {
+                if (!data || data.error) {
+                    adminUserAccessTable.innerHTML = '<p>Unable to load user access data.</p>';
+                    console.error('Unable to load admin users:', data?.error);
+                    return;
+                }
+
+                renderAdminUsersTable(data.users || []);
+            })
+            .catch(error => {
+                console.error('Error fetching admin users:', error);
+                adminUserAccessTable.innerHTML = '<p>Unable to load user access data.</p>';
+            });
+    }
+
+    function renderAdminUsersTable(users) {
+        if (!adminUserAccessTable) return;
+        if (!users.length) {
+            adminUserAccessTable.innerHTML = '<p>No user accounts found.</p>';
+            return;
+        }
+
+        const rows = users.map(user => {
+            const name = `${user.first_name || ''} ${user.last_name || ''}`.trim() || `User #${user.user_id}`;
+            return `
+                <tr>
+                    <td>${user.user_id}</td>
+                    <td>${name}</td>
+                    <td>${user.email || '—'}</td>
+                    <td>${user.user_role || '—'}</td>
+                    <td>${user.account_status || '—'}</td>
+                    <td>${user.created_at || '—'}</td>
+                </tr>
+            `;
+        }).join('');
+
+        adminUserAccessTable.innerHTML = `
+            <div class="table-scroll">
+                <table class="admin-user-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    function fetchAdminSettings() {
+        if (!settingsList) return;
+
+        settingsList.innerHTML = '<li>Loading settings...</li>';
+
+        fetch('../php/getAdminSettings.php')
+            .then(response => response.json())
+            .then(data => {
+                if (!data || data.error) {
+                    settingsList.innerHTML = '<li>Unable to load settings.</li>';
+                    console.error('Unable to load admin settings:', data?.error);
+                    return;
+                }
+
+                renderAdminSettings(data.settings || {});
+            })
+            .catch(error => {
+                console.error('Error fetching admin settings:', error);
+                settingsList.innerHTML = '<li>Unable to load settings.</li>';
+            });
+    }
+
+    function renderAdminSettings(settings) {
+        if (!settingsList) return;
+
+        const entries = Object.entries(settings);
+        if (!entries.length) {
+            settingsList.innerHTML = '<li>No settings available.</li>';
+            return;
+        }
+
+        settingsList.innerHTML = entries.map(([key, value]) => `
+            <li><strong>${key.replace(/_/g, ' ')}:</strong> ${value}</li>
+        `).join('');
+    }
+
+    function setupThemeControls() {
+        if (cardRadiusInput && cardRadiusValue) {
+            cardRadiusValue.textContent = `${cardRadiusInput.value}px`;
+            cardRadiusInput.addEventListener('input', () => {
+                cardRadiusValue.textContent = `${cardRadiusInput.value}px`;
+            });
+        }
+
+        if (applyThemeBtn) {
+            applyThemeBtn.addEventListener('click', () => {
+                const theme = themeSelect?.value || 'light';
+                const accentColor = accentColorInput?.value || '#4F46E5';
+                const cardRadius = parseInt(cardRadiusInput?.value || '16', 10);
+                const settings = { theme, accentColor, cardRadius };
+                applyTheme(settings);
+                saveThemeSettings(settings);
+            });
+        }
+
+        if (resetThemeBtn) {
+            resetThemeBtn.addEventListener('click', () => {
+                const defaults = { theme: 'light', accentColor: '#4F46E5', cardRadius: 16 };
+                if (themeSelect) themeSelect.value = defaults.theme;
+                if (accentColorInput) accentColorInput.value = defaults.accentColor;
+                if (cardRadiusInput) cardRadiusInput.value = defaults.cardRadius;
+                if (cardRadiusValue) cardRadiusValue.textContent = `${defaults.cardRadius}px`;
+                applyTheme(defaults);
+                saveThemeSettings(defaults);
+            });
+        }
+    }
+
+    function loadStoredTheme() {
+        const stored = getStoredThemeSettings();
+        if (!stored) {
+            applyTheme({ theme: 'light', accentColor: '#4F46E5', cardRadius: 16 });
+            return;
+        }
+
+        if (themeSelect) themeSelect.value = stored.theme;
+        if (accentColorInput) accentColorInput.value = stored.accentColor;
+        if (cardRadiusInput) {
+            cardRadiusInput.value = stored.cardRadius;
+            if (cardRadiusValue) cardRadiusValue.textContent = `${stored.cardRadius}px`;
+        }
+        applyTheme(stored);
+    }
+
+    function saveThemeSettings(settings) {
+        localStorage.setItem('adminDashboardTheme', JSON.stringify(settings));
+    }
+
+    function getStoredThemeSettings() {
+        const data = localStorage.getItem('adminDashboardTheme');
+        if (!data) return null;
+        try {
+            return JSON.parse(data);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function applyTheme(settings) {
+        document.body.classList.remove('theme-light', 'theme-dark', 'theme-blue');
+        document.body.classList.add(`theme-${settings.theme}`);
+        document.documentElement.style.setProperty('--accent-color', settings.accentColor);
+        document.documentElement.style.setProperty('--card-radius', `${settings.cardRadius}px`);
+        if (currentThemeLabel) {
+            currentThemeLabel.textContent = `${settings.theme.charAt(0).toUpperCase()}${settings.theme.slice(1)}`;
+        }
+    }
+
+    function getThemeDefaults() {
+        return { theme: 'light', accentColor: '#4F46E5', cardRadius: 16 };
+    }
+
+    function restoreThemeControls() {
+        const defaults = getThemeDefaults();
+        if (themeSelect) themeSelect.value = defaults.theme;
+        if (accentColorInput) accentColorInput.value = defaults.accentColor;
+        if (cardRadiusInput) cardRadiusInput.value = defaults.cardRadius;
+        if (cardRadiusValue) cardRadiusValue.textContent = `${defaults.cardRadius}px`;
     }
 
     function renderDoctorAppointments(appointments) {
@@ -503,7 +737,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function setupDoctorRouting() {
+    function setupRouteNavigation() {
         routeLinks.forEach(link => {
             link.addEventListener('click', (event) => {
                 event.preventDefault();
@@ -527,12 +761,31 @@ document.addEventListener('DOMContentLoaded', function () {
             link.classList.toggle('active', link.dataset.route === route);
         });
 
-        if (route === 'appointments') {
+        if (isDoctorPage && route === 'appointments') {
             fetchDoctorAppointments();
         }
 
-        if (route === 'medical-records') {
+        if (isDoctorPage && route === 'medical-records') {
             renderMedicalRecordForm(doctorAppointmentCache);
+        }
+
+        if (isAdminPage && route === 'dashboard') {
+            fetchAdminOverview();
+        }
+
+        if (isAdminPage && route === 'user-access') {
+            fetchAdminUsers();
+        }
+
+        if (isAdminPage && route === 'settings') {
+            fetchAdminSettings();
+        }
+
+        if (isPatientPage && route === 'appointments') {
+            const section = document.getElementById('appointments-section');
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         }
     }
 
@@ -574,6 +827,10 @@ document.addEventListener('DOMContentLoaded', function () {
     function renderScheduledAppointments(appointments) {
         if (!scheduledAppointments) return;
 
+        if (appointmentCountLabel) {
+            appointmentCountLabel.textContent = appointments.length.toString();
+        }
+
         if (!appointments.length) {
             scheduledAppointments.innerHTML = '<p>No booked appointments.</p>';
             return;
@@ -600,6 +857,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function appendAppointmentToDOM(appointment) {
         if (!scheduledAppointments) return;
+
+        if (appointmentCountLabel) {
+            const currentCount = scheduledAppointments.querySelectorAll('.appointment-card').length + 1;
+            appointmentCountLabel.textContent = currentCount.toString();
+        }
 
         // Ensure array container exists
         if (!scheduledAppointments.querySelector('.appointment-card')) {

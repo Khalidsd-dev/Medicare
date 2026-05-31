@@ -15,13 +15,6 @@ if (!isset($_SESSION['LOGGED_IN_USER']) || $_SESSION['LOGGED_IN_USER'] !== true 
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <style>
-        .hidden { display: none; }
-        .dashboard-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-top: 1rem; }
-        .summary-card { background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
-        .summary-card h4 { margin-bottom: 0.75rem; }
-        .summary-value { font-size: 2rem; font-weight: 700; }
-    </style>
     <title>Medicare | Doctor Dashboard</title>
 </head>
 <body>
@@ -41,6 +34,7 @@ if (!isset($_SESSION['LOGGED_IN_USER']) || $_SESSION['LOGGED_IN_USER'] !== true 
                         <p id="user_id">ID: <?php echo htmlspecialchars($_SESSION['USER_ID'] ?? ''); ?></p>
                     </div>
                 </div>
+                
                 <div class="side-links">
                     <div class="side-link">
                         <i class='bx bxs-dashboard'></i>
@@ -66,6 +60,7 @@ if (!isset($_SESSION['LOGGED_IN_USER']) || $_SESSION['LOGGED_IN_USER'] !== true 
                         <a href="../php/logout.php">Log Out</a>
                     </div>
                 </div>
+
             </div>
             <div class="contents">
                 <div class="contents-container">

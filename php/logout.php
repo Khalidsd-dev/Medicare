@@ -11,6 +11,6 @@ $_SESSION = [];
 // Destroy session
 session_destroy();
 
-header("location: ../index.html");
+header("location: login.php");
 exit();
 ?>

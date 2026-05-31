@@ -28,6 +28,27 @@ public function __construct() {
     // The constructor is currently empty, but it can be used to initialize any necessary properties or dependencies in the future.
 }
 
+private function hashPassword(string $password): string {
+    return password_hash($password, PASSWORD_DEFAULT);
+}
+
+private function verifyPassword(string $password, string $hash): bool {
+    return password_verify($password, $hash);
+}
+
+private function needsRehash(string $hash): bool {
+    return password_needs_rehash($hash, PASSWORD_DEFAULT);
+}
+
+private function upgradePasswordHash(int $userId, string $newHash): void {
+    $pdo = require __DIR__ . '/db_connect.php';
+    if (!($pdo instanceof PDO)) {
+        throw new \RuntimeException('Database connection did not return a PDO instance');
+    }
+
+    $stmt = $pdo->prepare('UPDATE users SET password = ? WHERE user_id = ?');
+    $stmt->execute([$newHash, $userId]);
+}
 
 /*
 Response and request are not used in this class, but they are included in the constructor for potential future use.
@@ -47,19 +68,22 @@ public function loginToDatabaseAsPatientWithCredentials($email, $password) {
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Had an bug which I found the culprit with this debug eppression
-        // var_dump([
-        //     "DB_ROLE" => $user['user_role'] ?? null,
-        //     "INPUT_ROLE_EXPECTED" => "PATIENT",
-        //     "DB_PASSWORD" => $user['password'] ?? null,
-        //     "INPUT_PASSWORD" => $password
-        // ]);
-        // exit;
+        if (!$user || $user['user_role'] !== 'PATIENT') {
+            return false;
+        }
 
-        if ($user && $user['user_role'] === 'PATIENT' && $user['password'] === $password) {
-            # code...
+        if (isset($user['password']) && $this->verifyPassword($password, $user['password'])) {
+            if ($this->needsRehash($user['password'])) {
+                $this->upgradePasswordHash($user['user_id'], $this->hashPassword($password));
+            }
             return $user;
         }
+
+        if (isset($user['password']) && $user['password'] === $password) {
+            $this->upgradePasswordHash($user['user_id'], $this->hashPassword($password));
+            return $user;
+        }
+
         return false;
 
     } catch (Exception $e) {
@@ -77,11 +101,23 @@ public function loginToDatabaseAsDoctorWithCredentials($email, $password) {
         $stmt->execute([$email]);
         $doctor = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$doctor || $doctor['user_role'] !== 'DOCTOR' || $doctor['password'] !== trim($password)) {
+        if (!$doctor || $doctor['user_role'] !== 'DOCTOR') {
             return false;
         }
 
-        return $doctor;
+        if (isset($doctor['password']) && $this->verifyPassword($password, $doctor['password'])) {
+            if ($this->needsRehash($doctor['password'])) {
+                $this->upgradePasswordHash($doctor['user_id'], $this->hashPassword($password));
+            }
+            return $doctor;
+        }
+
+        if (isset($doctor['password']) && $doctor['password'] === trim($password)) {
+            $this->upgradePasswordHash($doctor['user_id'], $this->hashPassword($password));
+            return $doctor;
+        }
+
+        return false;
 
     } catch (Exception $e) {
         die("Database connection failed: " . $e->getMessage());
@@ -92,30 +128,44 @@ public function loginToDatabaseAsDoctorWithCredentials($email, $password) {
 public function loginToDatabaseAsAdminWithCredentials($email, $password) {
     try {
         $pdo = require __DIR__ . '/db_connect.php';
-        $stmt = $pdo->prepare("SELECT * FROM admins WHERE email = ? LIMIT 1");
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? LIMIT 1");
         $stmt->execute([$email]);
 
         $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        if (!$admin || $admin['user_role'] !== 'ADMIN') {
+            return false;
+        }
 
-        if ($admin && $admin['user_role'] === 'ADMIN' && $admin['password'] === $password) {
+        if (isset($admin['password']) && $this->verifyPassword($password, $admin['password'])) {
+            if ($this->needsRehash($admin['password'])) {
+                $this->upgradePasswordHash($admin['user_id'], $this->hashPassword($password));
+            }
+            return $admin;
+        }
+
+        if (isset($admin['password']) && $admin['password'] === $password) {
+            $this->upgradePasswordHash($admin['user_id'], $this->hashPassword($password));
             return $admin;
         }
 
         return false;
+
     } catch (Exception $e) {
         die("Database connection failed: " . $e->getMessage());
     }
 }
 
-public function SaveUserCreadentials($email, $password) {    
+public function SaveUserCreadentials($email, $password) {
     try {
         $pdo = require __DIR__ . '/db_connect.php';
-        $stmt = $pdo->prepare("INSERT INTO users (user_email, user_password) VALUES (?,?)");
-        $stmt->execute([$email, $password]);
-        return $stmt->fetch();
+        $hashedPassword = $this->hashPassword($password);
+        $stmt = $pdo->prepare(
+            "INSERT INTO users (email, password, first_name, last_name, gender, user_role, account_status) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        );
+        $stmt->execute([$email, $hashedPassword, 'New', 'User', 'OTHER', 'PATIENT', 'ACTIVE']);
+        return $pdo->lastInsertId();
     } catch (\Throwable $th) {
-        //throw $th;
         die("Database connection failed: " . $th->getMessage());
     }
 }

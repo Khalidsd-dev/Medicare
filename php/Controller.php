@@ -8,15 +8,19 @@ session_start(); // Start the session to manage user authentication and store se
 
 // ****** LOGIN FUNCTIONALITY ******
 
-if (isset($_POST['email']) && isset($_POST['password'])) {
-    $email = $_POST['email']; // Use null coalescing operator to handle undefined index
-    $password = $_POST['password']; // Use null coalescing operator to handle undefined index
-    
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+    $password = trim($_POST['password'] ?? '');
+
+    if (!$email || !$password) {
+        header('Location: login.php?error=missing');
+        exit();
+    }
+
     $executorService = new Executor();
     $loginResult = $executorService->loginASPatient($email, $password);
     $doctorResult = $executorService->loginASDoctor($email, $password);
-
-    
+    $adminLogin = $executorService->loginASAdmin($email, $password);
 
     
 
@@ -59,17 +63,26 @@ if ($doctorResult) {
     header("location: ../view/doctorDashboard.php");
     exit();
 }
-    // Missing email or password, redirect back to the login page with an error message 
-    header("Location: login.php?error=missing");
-    exit();
 
-    
-}
-else {
-        // Missing email or password, redirect back to the login page with an error message 
-    header("Location: login.php?error=missing");
+
+if ($adminLogin) {
+     session_regenerate_id(true);
+
+    $_SESSION['LOGGED_IN_USER'] = true;
+    $_SESSION['USER_ROLE'] = $adminLogin['user_role'];
+    $_SESSION['USER_ID'] = $adminLogin['user_id'];
+    $_SESSION['USER_EMAIL'] = $adminLogin["email"];
+    $_SESSION['USER_NAME'] = $adminLogin['first_name'];
+    $_SESSION['USER_SURNAME'] = $adminLogin['last_name'];
+    $_SESSION["USER_INITIALS"] = $adminLogin['initials'];
+
+    header("location: ../view/adminDashboard.php");
     exit();
-    }
+}
+
+header("Location: login.php?error=invalid");
+exit();
+}
 
 // ****** END OF LOGIN FUNCTIONALITY ******
 
