@@ -1,6 +1,5 @@
 <?php
 require_once "database.php";
-require_once "db_connect.php";
 include_once "Executor.php";
 require_once "appointmentManager.php";
 
@@ -78,10 +77,7 @@ public function loginToDatabaseAsDoctorWithCredentials($email, $password) {
         $stmt->execute([$email]);
         $doctor = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$doctor && $doctor['user_role'] !== "DOCTOR" && $doctor['password'] !== trim($password)) {
-            return false;
-        }
-        if ($doctor['user_role'] === 'PATIENT' || $doctor['user_role'] === 'ADMIN') {
+        if (!$doctor || $doctor['user_role'] !== 'DOCTOR' || $doctor['password'] !== trim($password)) {
             return false;
         }
 
@@ -159,12 +155,28 @@ public function scheduleAppointment() {
 
 public function viewAppointments($patientId) {
     try {
-        $pdo = require_once __DIR__ . '/db_connect.php';
-        $stmt = $pdo->prepare("SELECT * FROM appointments WHERE patient_id = ?");
+        $pdo = require __DIR__ . '/db_connect.php';
+        if (!($pdo instanceof PDO)) {
+            throw new \RuntimeException('Database connection did not return a PDO instance');
+        }
+        $stmt = $pdo->prepare(
+            "SELECT a.*, u.first_name AS doctor_first_name, u.last_name AS doctor_last_name, d.specialization AS doctor_specialty " .
+            "FROM appointments a " .
+            "JOIN users u ON a.doctor_id = u.user_id " .
+            "JOIN doctors d ON a.doctor_id = d.doctor_id " .
+            "WHERE a.patient_id = ? " .
+            "ORDER BY a.appointment_date ASC, a.appointment_time ASC"
+        );
         $stmt->execute([$patientId]);
 
-        if($stmt->rowCount() > 0) {
-            return $stmt->fetchAll();
+        if ($stmt->rowCount() > 0) {
+            $appointments = $stmt->fetchAll();
+            return array_map(function ($appointment) {
+                $appointment['doctor_name'] = trim($appointment['doctor_first_name'] . ' ' . $appointment['doctor_last_name']);
+                $appointment['doctor_specialty'] = $appointment['doctor_specialty'] ?? '';
+                unset($appointment['doctor_first_name'], $appointment['doctor_last_name']);
+                return $appointment;
+            }, $appointments);
         } else {
             return false; // No appointments found
         }
@@ -174,11 +186,58 @@ public function viewAppointments($patientId) {
     }
 }
 
+public function viewDoctorAppointments($doctorId) {
+    try {
+        $pdo = require __DIR__ . '/db_connect.php';
+        if (!($pdo instanceof PDO)) {
+            throw new \RuntimeException('Database connection did not return a PDO instance');
+        }
+
+        $stmt = $pdo->prepare(
+            "SELECT a.*, u.first_name AS patient_first_name, u.last_name AS patient_last_name " .
+            "FROM appointments a " .
+            "JOIN users u ON a.patient_id = u.user_id " .
+            "WHERE a.doctor_id = ? " .
+            "ORDER BY a.appointment_date ASC, a.appointment_time ASC"
+        );
+        $stmt->execute([$doctorId]);
+
+        if ($stmt->rowCount() > 0) {
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        return false;
+    } catch (\Throwable $th) {
+        die("Database connection failed: " . $th->getMessage());
+    }
+}
+
+public function updateAppointmentStatus($appointmentId, $doctorId, $status) {
+    try {
+        $pdo = require __DIR__ . '/db_connect.php';
+        if (!($pdo instanceof PDO)) {
+            throw new \RuntimeException('Database connection did not return a PDO instance');
+        }
+
+        $stmt = $pdo->prepare(
+            "UPDATE appointments SET appointment_status = ?, updated_at = NOW() WHERE appointment_id = ? AND doctor_id = ?"
+        );
+        $stmt->execute([$status, $appointmentId, $doctorId]);
+
+        return $stmt->rowCount() > 0;
+    } catch (\Throwable $th) {
+        die("Database connection failed: " . $th->getMessage());
+    }
+}
+
 // This method fetches all appointments from the database, regardless of the patient ID. 
 // It can be used for administrative purposes or for doctors to view all appointments.
 public function fetchAllAppointments() {
     try {
-        $pdo = require_once __DIR__ . '/db_connect.php';
+        $pdo = require __DIR__ . '/db_connect.php';
+        if (!($pdo instanceof PDO)) {
+            throw new \RuntimeException('Database connection did not return a PDO instance');
+        }
         $stmt = $pdo->prepare("SELECT * FROM appointments");
         $stmt->execute();
 

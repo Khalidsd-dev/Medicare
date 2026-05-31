@@ -1,6 +1,6 @@
 <?php
 
-require_once 'db_connect.php';
+require 'db_connect.php';
 
 class database {
 private $request;
@@ -24,7 +24,10 @@ public function getRequest() {
 
 public function loginToDatabase() {
     try {
-        $pdo = require_once __DIR__ . '/db_connect.php';
+        $pdo = require __DIR__ . '/db_connect.php';
+        if (!($pdo instanceof PDO)) {
+            throw new \RuntimeException('Database connection did not return a PDO instance');
+        }
         return $pdo;
     }
     catch (Exception $e) {

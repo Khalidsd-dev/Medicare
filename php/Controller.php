@@ -37,16 +37,15 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     $_SESSION['USER_NAME'] = $loginResult['first_name'];
     $_SESSION['USER_SURNAME'] = $loginResult['last_name'];
     $_SESSION["USER_INITIALS"] = $Initials;
-    header("location: ../view/patientDashboard.html");
+    header("location: ../view/patientDashboard.php");
     exit();
 } 
 
 if ($doctorResult) {
-    # code...
     session_regenerate_id(true);
 
     $Initials = $initialsData['initials'] ?? strtoupper(
-            $doctorResult['first_name'][0] . $loginResult['last_name'][0]
+            $doctorResult['first_name'][0] . $doctorResult['last_name'][0]
         );
 
     $_SESSION['LOGGED_IN_USER'] = true;
@@ -57,7 +56,7 @@ if ($doctorResult) {
     $_SESSION['USER_SURNAME'] = $doctorResult['last_name'];
     $_SESSION["USER_INITIALS"] = $Initials;
     
-    header("location: ../view/doctorDashboard.html");
+    header("location: ../view/doctorDashboard.php");
     exit();
 }
     // Missing email or password, redirect back to the login page with an error message 
