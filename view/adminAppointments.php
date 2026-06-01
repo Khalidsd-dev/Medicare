@@ -1,3 +1,12 @@
+<?php
+session_start();
+// Ensure only admins can access this page
+if (!isset($_SESSION['LOGGED_IN_USER']) || $_SESSION['LOGGED_IN_USER'] !== true || ($_SESSION['USER_ROLE'] ?? '') !== 'ADMIN') {
+    header('Location: ../php/login.php');
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,7 +41,7 @@
                     </div>
                     <div class="side-link">
                         <i class='bx bxs-calendar'></i>
-                        <a href="adminAppointments.php" class="route-link" data-route="appointments">Appointments</a>
+                        <a href="#" class="route-link" data-route="appointments">Appointments</a>
                         <div class="counter">
                             <span class="appt-count">0</span>
                         </div>
@@ -59,37 +68,14 @@
 
         <div class="contents">
                 <div class="contents-container">
-                    <div id="route-dashboard" class="route-page">
-                        <div class="page-heading">
-                            <div>
-                                <p class="eyebrow">Overview</p>
-                                <h1>Admin Control Center</h1>
-                            </div>
-                            <div class="heading-actions">
-                                <button class="secondary-button" id="refresh-admin-data">Refresh data</button>
-                            </div>
-                        </div>
-                        <p class="section-description">Monitor system health, appointment activity, and user access in one place.</p>
-                        <div class="dashboard-summary">
-                            <div class="summary-card">
-                                <h4>Pending Requests</h4>
-                                <p class="summary-value" id="summary-pending">0</p>
-                            </div>
-                            <div class="summary-card">
-                                <h4>Confirmed Appointments</h4>
-                                <p class="summary-value" id="summary-confirmed">0</p>
-                            </div>
-                            <div class="summary-card">
-                                <h4>Completed</h4>
-                                <p class="summary-value" id="summary-completed">0</p>
-                            </div>
-                            <div class="summary-card">
-                                <h4>Theme</h4>
-                                <p class="summary-value" id="current-theme">Light</p>
-                            </div>
+                    <div id="route-appointments" class="route-page hidden">
+                        <h2 class="admin-title">Appointment Management</h2>
+                        <p>Review and manage appointment requests, confirmations, and scheduling at a system level.</p>
+                        <hr>
+                        <div class="admin-panel">
+                            <p>Use this section to keep appointments organized and to ensure every request is handled properly.</p>
                         </div>
                     </div>
-                    
                 </div>
     </div>
     </div>
