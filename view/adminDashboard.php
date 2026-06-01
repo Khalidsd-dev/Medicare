@@ -32,7 +32,7 @@
                     </div>
                     <div class="side-link">
                         <i class='bx bxs-calendar'></i>
-                        <a href="#" class="route-link" data-route="appointments">Appointments</a>
+                        <a href="adminAppointments.php" class="route-link" data-route="appointments">Appointments</a>
                         <div class="counter">
                             <span class="appt-count">0</span>
                         </div>
@@ -59,6 +59,7 @@
 
         <div class="contents">
                 <div class="contents-container">
+                    <!-- Dashboard Route -->
                     <div id="route-dashboard" class="route-page">
                         <div class="page-heading">
                             <div>
@@ -89,129 +90,146 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Appointments Route -->
                     <div id="route-appointments" class="route-page hidden">
-                        <h2 class="admin-title">Appointment Management</h2>
-                        <p>Review and manage appointment requests, confirmations, and scheduling at a system level.</p>
-                        <hr>
-                        <div class="admin-panel">
-                            <p>Use this section to keep appointments organized and to ensure every request is handled properly.</p>
+                        <div class="page-heading">
+                            <div>
+                                <p class="eyebrow">Management</p>
+                                <h1>Appointments</h1>
+                            </div>
+                        </div>
+                        <p class="section-description">View and manage all system appointments.</p>
+                        <div id="admin-appointments-container">
+                            <p>Loading appointments...</p>
                         </div>
                     </div>
+
+                    <!-- User Access Route -->
                     <div id="route-user-access" class="route-page hidden">
-                        <h2 class="admin-title">User Access</h2>
-                        <p>Review and manage access for patients, doctors, and administrators.</p>
-                        <hr>
-                        <div class="dashboard-summary">
-                            <div class="summary-card">
-                                <h4>Active Patients</h4>
-                                <p class="summary-value" id="user-count-patients">0</p>
+                        <div class="page-heading">
+                            <div>
+                                <p class="eyebrow">Management</p>
+                                <h1>User Access Control</h1>
                             </div>
-                            <div class="summary-card">
-                                <h4>Active Doctors</h4>
-                                <p class="summary-value" id="user-count-doctors">0</p>
-                            </div>
-                            <div class="summary-card">
-                                <h4>Admin Accounts</h4>
-                                <p class="summary-value" id="user-count-admins">0</p>
+                            <div class="heading-actions">
+                                <button class="secondary-button" id="toggle-user-form-btn">Create User</button>
                             </div>
                         </div>
-                        <div class="admin-panel">
-                            <h3>User Accounts</h3>
-                            <div id="admin-user-access-table" class="user-table-container">
-                                <p>Loading user access data...</p>
-                            </div>
-                        </div>
-                        <div class="admin-panel">
-                            <h3>Create User Account</h3>
-                            <form id="admin-user-create-form" class="admin-create-user-form">
-                                <div class="form-row">
-                                    <label for="new-user-first-name">First Name</label>
-                                    <input type="text" id="new-user-first-name" name="first_name" required>
+                        <p class="section-description">Manage user accounts and access permissions.</p>
+
+                        <!-- Create User Form -->
+                        <div id="admin-user-form-container" style="display: none;">
+                            <form id="admin-user-create-form" class="form-container">
+                                <h3>Create New User</h3>
+                                <div class="form-group">
+                                    <label for="admin-first-name">First Name</label>
+                                    <input type="text" id="admin-first-name" name="first_name" required>
                                 </div>
-                                <div class="form-row">
-                                    <label for="new-user-last-name">Last Name</label>
-                                    <input type="text" id="new-user-last-name" name="last_name" required>
+                                <div class="form-group">
+                                    <label for="admin-last-name">Last Name</label>
+                                    <input type="text" id="admin-last-name" name="last_name" required>
                                 </div>
-                                <div class="form-row">
-                                    <label for="new-user-email">Email</label>
-                                    <input type="email" id="new-user-email" name="email" autocomplete="email" required>
+                                <div class="form-group">
+                                    <label for="admin-email">Email</label>
+                                    <input type="email" id="admin-email" name="email" required>
                                 </div>
-                                <div class="form-row">
-                                    <label for="new-user-password">Password</label>
-                                    <input type="password" id="new-user-password" name="password" autocomplete="new-password" required>
+                                <div class="form-group">
+                                    <label for="admin-password">Password</label>
+                                    <input type="password" id="admin-password" name="password" required>
                                 </div>
-                                <div class="form-row">
-                                    <label for="new-user-role">Role</label>
-                                    <select id="new-user-role" name="role" required>
+                                <div class="form-group">
+                                    <label for="admin-gender">Gender</label>
+                                    <select id="admin-gender" name="gender">
+                                        <option value="MALE">Male</option>
+                                        <option value="FEMALE">Female</option>
+                                        <option value="OTHER">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="admin-role">Role</label>
+                                    <select id="admin-role" name="role">
                                         <option value="PATIENT">Patient</option>
                                         <option value="DOCTOR">Doctor</option>
                                         <option value="ADMIN">Admin</option>
                                     </select>
                                 </div>
-                                <div class="form-row">
-                                    <label for="new-user-status">Account Status</label>
-                                    <select id="new-user-status" name="account_status" required>
+                                <div class="form-group">
+                                    <label for="admin-account-status">Account Status</label>
+                                    <select id="admin-account-status" name="account_status">
                                         <option value="ACTIVE">Active</option>
                                         <option value="INACTIVE">Inactive</option>
                                         <option value="SUSPENDED">Suspended</option>
                                     </select>
                                 </div>
-                                <button type="submit" class="primary-button">Create Account</button>
-                                <p id="admin-create-user-feedback" class="booking-feedback"></p>
+                                <div id="admin-create-user-feedback" style="margin: 10px 0;"></div>
+                                <button type="submit" class="primary-button">Create User</button>
                             </form>
                         </div>
+
+                        <!-- User Access Table -->
+                        <div id="admin-user-access-table">
+                            <p>Loading user accounts...</p>
+                        </div>
                     </div>
+
+                    <!-- Settings Route -->
                     <div id="route-settings" class="route-page hidden">
                         <div class="page-heading">
                             <div>
-                                <p class="eyebrow">Settings</p>
-                                <h2>Dashboard Theme</h2>
+                                <p class="eyebrow">Preferences</p>
+                                <h1>System Settings</h1>
                             </div>
                         </div>
-                        <p class="section-description">Choose a visual theme and have it apply across the admin dashboard immediately.</p>
-                        <div class="admin-panel settings-panel">
-                            <form id="admin-theme-form">
-                                <div class="form-row">
-                                    <label for="theme-select">Theme</label>
-                                    <select id="theme-select" name="theme">
-                                        <option value="light">Light</option>
-                                        <option value="dark">Dark</option>
-                                        <option value="blue">Blue</option>
-                                    </select>
+                        <p class="section-description">Configure system appearance and preferences.</p>
+                        
+                        <div class="settings-section">
+                            <h3>Theme Settings</h3>
+                            <div class="form-group">
+                                <label for="theme-select">Theme</label>
+                                <select id="theme-select">
+                                    <option value="light">Light</option>
+                                    <option value="dark">Dark</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="accent-color">Accent Color</label>
+                                <input type="color" id="accent-color" value="#007bff">
+                            </div>
+                            <div class="form-group">
+                                <label for="card-radius">Card Border Radius</label>
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                    <input type="range" id="card-radius" min="0" max="20" value="8">
+                                    <span id="card-radius-value">8px</span>
                                 </div>
-                                <div class="form-row">
-                                    <label for="accent-color">Accent color</label>
-                                    <input type="color" id="accent-color" name="accentColor" value="#4F46E5">
-                                </div>
-                                <div class="form-row range-row">
-                                    <label for="card-radius">Card border radius</label>
-                                    <div class="range-group">
-                                        <input type="range" id="card-radius" name="cardRadius" min="0" max="32" value="16">
-                                        <span class="range-value" id="card-radius-value">16px</span>
-                                    </div>
-                                </div>
-                                <div class="form-actions">
-                                    <button type="button" class="primary-button" id="apply-theme-btn">Apply theme</button>
-                                    <button type="button" class="secondary-button" id="reset-theme-btn">Reset defaults</button>
-                                </div>
-                            </form>
+                            </div>
+                            <div class="form-actions">
+                                <button class="primary-button" id="apply-theme-btn">Apply Settings</button>
+                                <button class="secondary-button" id="reset-theme-btn">Reset to Default</button>
+                            </div>
                         </div>
-                        <div class="admin-panel">
-                            <h3>Saved configuration</h3>
-                            <ul id="settings-list" class="settings-list">
-                                <li>Loading settings...</li>
-                            </ul>
+
+                        <div id="settings-list">
+                            <p>Loading settings...</p>
                         </div>
                     </div>
+
+                    <!-- Messages Route -->
                     <div id="route-messages" class="route-page hidden">
-                        <h2 class="admin-title">Messages</h2>
-                        <p>Communications, alerts, and notifications for administrators will be displayed in this section.</p>
-                        <hr>
-                        <div class="admin-panel">
-                            <p>Monitor system notifications or incoming messages from users and doctors.</p>
+                        <div class="page-heading">
+                            <div>
+                                <p class="eyebrow">Communication</p>
+                                <h1>Messages</h1>
+                            </div>
+                        </div>
+                        <p class="section-description">View system notifications and messages.</p>
+                        <div id="messages-container">
+                            <p>No messages at this time.</p>
                         </div>
                     </div>
+                    
                 </div>
+    </div>
     </div>
     </div>
 

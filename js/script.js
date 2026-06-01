@@ -95,6 +95,21 @@ document.addEventListener('DOMContentLoaded', function () {
         if (adminUserCreateForm) {
             adminUserCreateForm.addEventListener('submit', handleAdminUserCreateSubmit);
         }
+        
+        const toggleUserFormBtn = document.getElementById('toggle-user-form-btn');
+        const userFormContainer = document.getElementById('admin-user-form-container');
+        if (toggleUserFormBtn && userFormContainer) {
+            toggleUserFormBtn.addEventListener('click', () => {
+                userFormContainer.style.display = userFormContainer.style.display === 'none' ? 'block' : 'none';
+            });
+        }
+
+        const refreshAdminDataBtn = document.getElementById('refresh-admin-data');
+        if (refreshAdminDataBtn) {
+            refreshAdminDataBtn.addEventListener('click', () => {
+                fetchAdminOverview();
+            });
+        }
     }
 
     if (isDoctorPage || isAdminPage || isPatientPage) {
@@ -419,6 +434,86 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
+    function fetchAdminAppointments() {
+        const appointmentsContainer = document.getElementById('admin-appointments-container');
+        if (!appointmentsContainer) return;
+
+        appointmentsContainer.innerHTML = '<p>Loading appointments...</p>';
+
+        fetch('../php/getAdminAppointments.php')
+            .then(response => response.json())
+            .then(data => {
+                if (!data || data.error) {
+                    appointmentsContainer.innerHTML = '<p>Unable to load appointments.</p>';
+                    console.error('Unable to load admin appointments:', data?.error);
+                    return;
+                }
+
+                renderAdminAppointments(data.appointments || []);
+            })
+            .catch(error => {
+                console.error('Error fetching admin appointments:', error);
+                appointmentsContainer.innerHTML = '<p>Unable to load appointments.</p>';
+            });
+    }
+
+    function renderAdminAppointments(appointments) {
+        const appointmentsContainer = document.getElementById('admin-appointments-container');
+        if (!appointmentsContainer) return;
+
+        if (!appointments.length) {
+            appointmentsContainer.innerHTML = '<p>No appointments found.</p>';
+            return;
+        }
+
+        const appointmentsByStatus = {
+            REQUESTED: [],
+            CONFIRMED: [],
+            COMPLETED: [],
+            CANCELLED: []
+        };
+
+        appointments.forEach(apt => {
+            const status = apt.appointment_status || 'REQUESTED';
+            if (appointmentsByStatus[status]) {
+                appointmentsByStatus[status].push(apt);
+            }
+        });
+
+        let html = '<div class="admin-appointments-view">';
+
+        Object.entries(appointmentsByStatus).forEach(([status, appts]) => {
+            if (appts.length > 0) {
+                html += `
+                    <div class="appointments-section">
+                        <h3>${status.replace('_', ' ')} (${appts.length})</h3>
+                        <div class="appointments-grid">
+                            ${appts.map(apt => {
+                                const patientName = `${apt.patient_first_name || ''} ${apt.patient_last_name || ''}`.trim() || `Patient #${apt.patient_id}`;
+                                const doctorName = `${apt.doctor_first_name || ''} ${apt.doctor_last_name || ''}`.trim() || `Doctor #${apt.doctor_id}`;
+                                return `
+                                    <div class="appointment-card">
+                                        <div class="appointment-card-header">
+                                            <p><strong>${escapeHtml(patientName)}</strong> → <strong>${escapeHtml(doctorName)}</strong></p>
+                                            <span class="appointment-status">${escapeHtml(status)}</span>
+                                        </div>
+                                        <p><strong>Date:</strong> ${escapeHtml(apt.appointment_date)}</p>
+                                        <p><strong>Time:</strong> ${escapeHtml(apt.appointment_time)}</p>
+                                        <p><strong>Reason:</strong> ${escapeHtml(apt.appointment_reason || 'N/A')}</p>
+                                        <p><strong>Created:</strong> ${escapeHtml(apt.created_at || '—')}</p>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+        });
+
+        html += '</div>';
+        appointmentsContainer.innerHTML = html;
+    }
+
     function renderAdminSettings(settings) {
         if (!settingsList) return;
 
@@ -728,14 +823,15 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
         if (!adminUserCreateForm) return;
 
-        const firstName = document.getElementById('new-user-first-name')?.value.trim();
-        const lastName = document.getElementById('new-user-last-name')?.value.trim();
-        const email = document.getElementById('new-user-email')?.value.trim();
-        const password = document.getElementById('new-user-password')?.value;
-        const role = document.getElementById('new-user-role')?.value;
-        const accountStatus = document.getElementById('new-user-status')?.value;
+        const firstName = document.getElementById('admin-first-name')?.value.trim();
+        const lastName = document.getElementById('admin-last-name')?.value.trim();
+        const email = document.getElementById('admin-email')?.value.trim();
+        const password = document.getElementById('admin-password')?.value;
+        const gender = document.getElementById('admin-gender')?.value;
+        const role = document.getElementById('admin-role')?.value;
+        const accountStatus = document.getElementById('admin-account-status')?.value;
 
-        if (!firstName || !lastName || !email || !password || !role || !accountStatus) {
+        if (!firstName || !lastName || !email || !password || !gender || !role || !accountStatus) {
             showAdminCreateUserFeedback('All fields are required.', true);
             return;
         }
@@ -745,7 +841,7 @@ document.addEventListener('DOMContentLoaded', function () {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ first_name: firstName, last_name: lastName, email, password, role, account_status: accountStatus })
+            body: JSON.stringify({ first_name: firstName, last_name: lastName, email, password, gender, role, account_status: accountStatus })
         })
             .then(response => response.json())
             .then(data => {
@@ -756,6 +852,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 showAdminCreateUserFeedback(data.message || 'User account created successfully.');
                 adminUserCreateForm.reset();
+                const userFormContainer = document.getElementById('admin-user-form-container');
+                if (userFormContainer) {
+                    userFormContainer.style.display = 'none';
+                }
                 fetchAdminUsers();
             })
             .catch(error => {
@@ -917,6 +1017,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (isAdminPage && route === 'dashboard') {
             fetchAdminOverview();
+        }
+
+        if (isAdminPage && route === 'appointments') {
+            fetchAdminAppointments();
         }
 
         if (isAdminPage && route === 'user-access') {
