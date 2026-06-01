@@ -48,7 +48,7 @@ if (!isset($_SESSION['LOGGED_IN_USER']) || $_SESSION['LOGGED_IN_USER'] !== true 
                         </div>
                     </div>
                     <div class="side-link">
-                        <i class='bx bxs-file-medical'></i>
+                        <i class='bx bxs-folder'></i>
                         <a href="doctorMedicalRecords.php">Medical Records</a>
                     </div>
                     <div class="side-link">
