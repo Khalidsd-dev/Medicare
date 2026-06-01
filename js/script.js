@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const resetThemeBtn = document.getElementById('reset-theme-btn');
     const currentThemeLabel = document.getElementById('current-theme');
 
-    const isDoctorPage = window.location.pathname.includes('doctorDashboard');
+    const isDoctorPage = window.location.pathname.includes('doctor');
     const isAdminPage = window.location.pathname.includes('adminDashboard');
     const isPatientPage = window.location.pathname.includes('patientDashboard');
     let selectedDoctor = null;
@@ -98,7 +98,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (isDoctorPage || isAdminPage || isPatientPage) {
-        setupRouteNavigation();
+        if (routeLinks.length > 0) {
+            setupRouteNavigation();
+        }
     }
 
     if (isAdminPage) {
@@ -106,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
         loadStoredTheme();
     }
 
-    if (isDoctorPage) {
+    if (isDoctorPage && doctorAppointments) {
         fetchDoctorAppointments();
 
         if (searchBtn) {

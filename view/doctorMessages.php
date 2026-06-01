@@ -15,7 +15,7 @@ if (!isset($_SESSION['LOGGED_IN_USER']) || $_SESSION['LOGGED_IN_USER'] !== true 
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <title>Medicare | Doctor Dashboard</title>
+    <title>Medicare | Doctor Messages</title>
 </head>
 <body>
 
@@ -36,7 +36,7 @@ if (!isset($_SESSION['LOGGED_IN_USER']) || $_SESSION['LOGGED_IN_USER'] !== true 
                 </div>
                 
                 <div class="side-links">
-                    <div class="side-link active">
+                    <div class="side-link">
                         <i class='bx bxs-dashboard'></i>
                         <a href="doctorDashboard.php">Dashboard</a>
                     </div>
@@ -51,7 +51,7 @@ if (!isset($_SESSION['LOGGED_IN_USER']) || $_SESSION['LOGGED_IN_USER'] !== true 
                         <i class='bx bxs-file-medical'></i>
                         <a href="doctorMedicalRecords.php">Medical Records</a>
                     </div>
-                    <div class="side-link">
+                    <div class="side-link active">
                         <i class='bx bxs-message'></i>
                         <a href="doctorMessages.php">Messages</a>
                     </div>
@@ -65,24 +65,8 @@ if (!isset($_SESSION['LOGGED_IN_USER']) || $_SESSION['LOGGED_IN_USER'] !== true 
             <div class="contents">
                 <div class="contents-container">
                     <div class="route-page">
-                        <h2>Doctor Dashboard</h2>
-                        <p>Welcome to your dashboard doctor!</p>
-                        <p>Use the left navigation to manage appointments, view medical records, and keep your patient care organized.</p>
-                        <hr>
-                        <div class="dashboard-summary">
-                            <div class="summary-card">
-                                <h4>Pending Requests</h4>
-                                <p class="summary-value" id="summary-pending">0</p>
-                            </div>
-                            <div class="summary-card">
-                                <h4>Confirmed Appointments</h4>
-                                <p class="summary-value" id="summary-confirmed">0</p>
-                            </div>
-                            <div class="summary-card">
-                                <h4>Completed</h4>
-                                <p class="summary-value" id="summary-completed">0</p>
-                            </div>
-                        </div>
+                        <h2>Messages</h2>
+                        <p>Message management is coming soon.</p>
                     </div>
                 </div>
             </div>
