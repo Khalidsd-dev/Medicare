@@ -21,12 +21,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const searchBtn = document.querySelector('.search-btn');
     const searchInput = document.querySelector('.searchbar');
     const filterOptions = document.querySelector('.filter-options');
+    const bookingForm = document.getElementById('booking-form');
+    const selectedDoctorIdInput = document.getElementById('selected-doctor-id');
     const medicalRecordForm = document.getElementById('medical-record-form');
     const medicalRecordAppointmentSelect = document.getElementById('medical-record-appointment');
     const medicalRecordDiagnosis = document.getElementById('medical-record-diagnosis');
     const medicalRecordPrescription = document.getElementById('medical-record-prescription');
     const medicalRecordTreatment = document.getElementById('medical-record-treatment');
     const medicalRecordFeedback = document.getElementById('medical-record-feedback');
+    const appointmentStatusForm = document.getElementById('appointment-status-form');
+    const statusAppointmentSelect = document.getElementById('status-appointment-select');
+    const appointmentStatusSelect = document.getElementById('appointment-status');
+    const statusUpdateFeedback = document.getElementById('status-update-feedback');
+    const adminUserCreateForm = document.getElementById('admin-user-create-form');
+    const adminCreateUserFeedback = document.getElementById('admin-create-user-feedback');
     const routeLinks = document.querySelectorAll('.route-link');
 
  // Route to pages
@@ -66,14 +74,26 @@ document.addEventListener('DOMContentLoaded', function () {
     if (isPatientPage) {
         fetchDoctors();
 
-        if (confirmBookBtn) {
-            confirmBookBtn.addEventListener('click', handleBookNow);
+        if (bookingForm) {
+            bookingForm.addEventListener('submit', handleBookNow);
         }
 
         if (window.INITIAL_APPOINTMENTS && Array.isArray(window.INITIAL_APPOINTMENTS) && window.INITIAL_APPOINTMENTS.length) {
             renderScheduledAppointments(window.INITIAL_APPOINTMENTS);
         } else {
             fetchAppointments();
+        }
+    }
+
+    if (isDoctorPage) {
+        if (appointmentStatusForm) {
+            appointmentStatusForm.addEventListener('submit', handleAppointmentStatusSubmit);
+        }
+    }
+
+    if (isAdminPage) {
+        if (adminUserCreateForm) {
+            adminUserCreateForm.addEventListener('submit', handleAdminUserCreateSubmit);
         }
     }
 
@@ -168,14 +188,26 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateSelectedDoctorDetails() {
         if (!selectedDoctor) {
             selectedDoctorDetails.textContent = 'Select a doctor above to proceed.';
-            confirmBookBtn.disabled = true;
+            if (selectedDoctorIdInput) {
+                selectedDoctorIdInput.value = '';
+            }
+            if (confirmBookBtn) {
+                confirmBookBtn.disabled = true;
+            }
             return;
         }
 
         selectedDoctorDetails.innerHTML = `
-            <strong>Doctor selected:</strong> ${selectedDoctor.name} (${selectedDoctor.specialty})
+            <strong>Doctor selected:</strong> ${escapeHtml(selectedDoctor.name)} (${escapeHtml(selectedDoctor.specialty)})
         `;
-        confirmBookBtn.disabled = false;
+
+        if (selectedDoctorIdInput) {
+            selectedDoctorIdInput.value = selectedDoctor.id;
+        }
+
+        if (confirmBookBtn) {
+            confirmBookBtn.disabled = false;
+        }
     }
 
     function handleBookNow() {
@@ -266,6 +298,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 doctorAppointmentCache = data.appointments || [];
+                populateAppointmentStatusOptions(doctorAppointmentCache);
                 renderDoctorAppointments(doctorAppointmentCache);
             })
             .catch(error => {
@@ -333,12 +366,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const name = `${user.first_name || ''} ${user.last_name || ''}`.trim() || `User #${user.user_id}`;
             return `
                 <tr>
-                    <td>${user.user_id}</td>
-                    <td>${name}</td>
-                    <td>${user.email || '—'}</td>
-                    <td>${user.user_role || '—'}</td>
-                    <td>${user.account_status || '—'}</td>
-                    <td>${user.created_at || '—'}</td>
+                    <td>${escapeHtml(user.user_id)}</td>
+                    <td>${escapeHtml(name)}</td>
+                    <td>${escapeHtml(user.email || '—')}</td>
+                    <td>${escapeHtml(user.user_role || '—')}</td>
+                    <td>${escapeHtml(user.account_status || '—')}</td>
+                    <td>${escapeHtml(user.created_at || '—')}</td>
                 </tr>
             `;
         }).join('');
@@ -499,16 +532,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 return `
                     <div class="appointment-card">
                         <div class="appointment-card-header">
-                            <p><strong>Patient:</strong> ${patientName}</p>
+                            <p><strong>Patient:</strong> ${escapeHtml(patientName)}</p>
                             <span class="appointment-status">Requested</span>
                         </div>
-                        <p><strong>Date:</strong> ${appointment.appointment_date}</p>
-                        <p><strong>Time:</strong> ${appointment.appointment_time}</p>
-                        <p><strong>Reason:</strong> ${appointment.appointment_reason || 'N/A'}</p>
-                        ${createdAt ? `<p><strong>Requested on:</strong> ${createdAt}</p>` : ''}
+                        <p><strong>Date:</strong> ${escapeHtml(appointment.appointment_date)}</p>
+                        <p><strong>Time:</strong> ${escapeHtml(appointment.appointment_time)}</p>
+                        <p><strong>Reason:</strong> ${escapeHtml(appointment.appointment_reason || 'N/A')}</p>
+                        ${createdAt ? `<p><strong>Requested on:</strong> ${escapeHtml(createdAt)}</p>` : ''}
                         <div class="appointment-actions">
-                            <button class="book-btn accept-btn" data-id="${appointment.appointment_id}" data-status="CONFIRMED">Accept</button>
-                            <button class="book-btn reject-btn" data-id="${appointment.appointment_id}" data-status="CANCELLED">Reject</button>
+                            <button class="book-btn accept-btn" data-id="${escapeHtml(appointment.appointment_id)}" data-status="CONFIRMED">Accept</button>
+                            <button class="book-btn reject-btn" data-id="${escapeHtml(appointment.appointment_id)}" data-status="CANCELLED">Reject</button>
                         </div>
                     </div>
                 `;
@@ -526,13 +559,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 return `
                     <div class="appointment-card">
                         <div class="appointment-card-header">
-                            <p><strong>Patient:</strong> ${patientName}</p>
+                            <p><strong>Patient:</strong> ${escapeHtml(patientName)}</p>
                             <span class="appointment-status">Confirmed</span>
                         </div>
-                        <p><strong>Date:</strong> ${appointment.appointment_date}</p>
-                        <p><strong>Time:</strong> ${appointment.appointment_time}</p>
-                        <p><strong>Reason:</strong> ${appointment.appointment_reason || 'N/A'}</p>
-                        ${updatedAt ? `<p><strong>Confirmed on:</strong> ${updatedAt}</p>` : ''}
+                        <p><strong>Date:</strong> ${escapeHtml(appointment.appointment_date)}</p>
+                        <p><strong>Time:</strong> ${escapeHtml(appointment.appointment_time)}</p>
+                        <p><strong>Reason:</strong> ${escapeHtml(appointment.appointment_reason || 'N/A')}</p>
+                        ${updatedAt ? `<p><strong>Confirmed on:</strong> ${escapeHtml(updatedAt)}</p>` : ''}
                     </div>
                 `;
             }).join('');
@@ -639,6 +672,102 @@ document.addEventListener('DOMContentLoaded', function () {
         medicalRecordFeedback.style.color = isError ? '#c00' : '#0a7';
     }
 
+    function escapeHtml(value) {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function handleAppointmentStatusSubmit(event) {
+        event.preventDefault();
+        if (!statusAppointmentSelect || !appointmentStatusSelect) return;
+
+        const appointmentId = statusAppointmentSelect.value;
+        const status = appointmentStatusSelect.value;
+
+        if (!appointmentId || !status) {
+            showStatusUpdateFeedback('Please select an appointment and a status.', true);
+            return;
+        }
+
+        fetch('../php/updateAppointmentStatus.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ appointment_id: appointmentId, status })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (!data || data.error) {
+                    showStatusUpdateFeedback(data.error || 'Unable to update appointment status.', true);
+                    return;
+                }
+
+                showStatusUpdateFeedback(data.message || 'Appointment status updated successfully.');
+                fetchDoctorAppointments();
+            })
+            .catch(error => {
+                console.error('Error updating appointment status:', error);
+                showStatusUpdateFeedback('A network error occurred while updating the appointment.', true);
+            });
+    }
+
+    function showStatusUpdateFeedback(message, isError = false) {
+        if (!statusUpdateFeedback) return;
+        statusUpdateFeedback.textContent = message;
+        statusUpdateFeedback.style.color = isError ? '#c00' : '#0a7';
+    }
+
+    function handleAdminUserCreateSubmit(event) {
+        event.preventDefault();
+        if (!adminUserCreateForm) return;
+
+        const firstName = document.getElementById('new-user-first-name')?.value.trim();
+        const lastName = document.getElementById('new-user-last-name')?.value.trim();
+        const email = document.getElementById('new-user-email')?.value.trim();
+        const password = document.getElementById('new-user-password')?.value;
+        const role = document.getElementById('new-user-role')?.value;
+        const accountStatus = document.getElementById('new-user-status')?.value;
+
+        if (!firstName || !lastName || !email || !password || !role || !accountStatus) {
+            showAdminCreateUserFeedback('All fields are required.', true);
+            return;
+        }
+
+        fetch('../php/adminCreateUser.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ first_name: firstName, last_name: lastName, email, password, role, account_status: accountStatus })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (!data || data.error) {
+                    showAdminCreateUserFeedback(data.error || 'Unable to create user account.', true);
+                    return;
+                }
+
+                showAdminCreateUserFeedback(data.message || 'User account created successfully.');
+                adminUserCreateForm.reset();
+                fetchAdminUsers();
+            })
+            .catch(error => {
+                console.error('Error creating admin user:', error);
+                showAdminCreateUserFeedback('A network error occurred while creating the user.', true);
+            });
+    }
+
+    function showAdminCreateUserFeedback(message, isError = false) {
+        if (!adminCreateUserFeedback) return;
+        adminCreateUserFeedback.textContent = message;
+        adminCreateUserFeedback.style.color = isError ? '#c00' : '#0a7';
+    }
+
     function handleDoctorSearch() {
         const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
         const filter = filterOptions ? filterOptions.value : '';
@@ -707,14 +836,29 @@ document.addEventListener('DOMContentLoaded', function () {
             return `
                 <div class="appointment-card">
                     <div class="appointment-card-header">
-                        <p><strong>${patient.name}</strong></p>
+                        <p><strong>${escapeHtml(patient.name)}</strong></p>
                         <span class="appointment-status">${appointmentCount} appt${appointmentCount > 1 ? 's' : ''}</span>
                     </div>
-                    <p><strong>Next visit:</strong> ${nextAppt.appointment_date} at ${nextAppt.appointment_time}</p>
-                    <p><strong>Status:</strong> ${nextAppt.appointment_status.replace('_', ' ')}</p>
+                    <p><strong>Next visit:</strong> ${escapeHtml(nextAppt.appointment_date)} at ${escapeHtml(nextAppt.appointment_time)}</p>
+                    <p><strong>Status:</strong> ${escapeHtml(nextAppt.appointment_status.replace('_', ' '))}</p>
                 </div>
             `;
         }).join('');
+    }
+
+    function populateAppointmentStatusOptions(appointments) {
+        if (!statusAppointmentSelect) return;
+        statusAppointmentSelect.innerHTML = '<option value="">Choose appointment</option>';
+
+        const confirmedOrPending = appointments.filter(a => ['REQUESTED', 'CONFIRMED'].includes(a.appointment_status));
+        confirmedOrPending.forEach(appointment => {
+            const label = `${appointment.patient_first_name || ''} ${appointment.patient_last_name || ''}`.trim() || `Patient #${appointment.patient_id}`;
+            const optionText = `${escapeHtml(label)} — ${escapeHtml(appointment.appointment_date)} ${escapeHtml(appointment.appointment_time)} (${escapeHtml(appointment.appointment_status)})`;
+            const option = document.createElement('option');
+            option.value = appointment.appointment_id;
+            option.textContent = optionText;
+            statusAppointmentSelect.appendChild(option);
+        });
     }
 
     function updateApprovedAppointmentCount(count) {
@@ -844,12 +988,12 @@ document.addEventListener('DOMContentLoaded', function () {
             return `
                 <div class="appointment-card">
                     <div class="appointment-card-header">
-                        <p><strong>Doctor:</strong> ${doctorName}${doctorSpecialty}</p>
-                        <span class="appointment-status">${statusLabel}</span>
+                        <p><strong>Doctor:</strong> ${escapeHtml(doctorName)}${doctorSpecialty ? ` (${escapeHtml(appointment.doctor_specialty)})` : ''}</p>
+                        <span class="appointment-status">${escapeHtml(statusLabel)}</span>
                     </div>
-                    <p><strong>Date:</strong> ${appointment.appointment_date}</p>
-                    <p><strong>Time:</strong> ${appointment.appointment_time}</p>
-                    ${createdAt ? `<p><strong>Booked on:</strong> ${createdAt}</p>` : ''}
+                    <p><strong>Date:</strong> ${escapeHtml(appointment.appointment_date)}</p>
+                    <p><strong>Time:</strong> ${escapeHtml(appointment.appointment_time)}</p>
+                    ${createdAt ? `<p><strong>Booked on:</strong> ${escapeHtml(createdAt)}</p>` : ''}
                 </div>
             `;
         }).join('');
@@ -879,12 +1023,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const cardHtml = `
             <div class="appointment-card">
                 <div class="appointment-card-header">
-                    <p><strong>Doctor:</strong> ${doctorName}${doctorSpecialty ? ' (' + doctorSpecialty + ')' : ''}</p>
-                    <span class="appointment-status">${statusLabel}</span>
+                    <p><strong>Doctor:</strong> ${escapeHtml(doctorName)}${doctorSpecialty ? ' (' + escapeHtml(doctorSpecialty) + ')' : ''}</p>
+                    <span class="appointment-status">${escapeHtml(statusLabel)}</span>
                 </div>
-                <p><strong>Date:</strong> ${appointment.appointment_date}</p>
-                <p><strong>Time:</strong> ${appointment.appointment_time}</p>
-                ${createdAt ? `<p><strong>Booked on:</strong> ${createdAt}</p>` : ''}
+                <p><strong>Date:</strong> ${escapeHtml(appointment.appointment_date)}</p>
+                <p><strong>Time:</strong> ${escapeHtml(appointment.appointment_time)}</p>
+                ${createdAt ? `<p><strong>Booked on:</strong> ${escapeHtml(createdAt)}</p>` : ''}
             </div>
         `;
 

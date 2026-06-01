@@ -219,6 +219,45 @@ CREATE TABLE audit_logs (
     ON DELETE SET NULL
 );
 
+-- Sample data for initial testing
+-- Note: seeded patient, doctor, and admin accounts all use password "password".
+INSERT INTO users (first_name, last_name, email, password, gender, user_role, account_status)
+VALUES
+    ('Alice', 'Patient', 'patient@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.T8eQYQxT4HqQX0kW', 'FEMALE', 'PATIENT', 'ACTIVE'),
+    ('Brian', 'Doctor', 'doctor@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.T8eQYQxT4HqQX0kW', 'MALE', 'DOCTOR', 'ACTIVE'),
+    ('Claire', 'Admin', 'admin@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.T8eQYQxT4HqQX0kW', 'OTHER', 'ADMIN', 'ACTIVE');
+
+INSERT INTO departments (department_name, department_description)
+VALUES
+    ('General Medicine', 'Primary care and general consultations'),
+    ('Cardiology', 'Heart and cardiovascular care');
+
+INSERT INTO doctor_departments (doctor_id, department_id)
+VALUES
+    (2, 1),
+    (2, 2);
+
+INSERT INTO appointments (patient_id, doctor_id, appointment_date, appointment_time, appointment_reason, appointment_status, created_at, updated_at)
+VALUES
+    (1, 2, '2026-06-10', '10:00:00', 'Routine checkup', 'CONFIRMED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO appointment_status_history (appointment_id, old_status, new_status, changed_by, notes)
+VALUES
+    (1, 'REQUESTED', 'CONFIRMED', 2, 'Confirmed by doctor.');
+
+INSERT INTO medical_records (patient_id, doctor_id, appointment_id, diagnosis, prescription, treatment_notes)
+VALUES
+    (1, 2, 1, 'Healthy with mild fatigue', 'Vitamin D supplements', 'Advise follow-up in four weeks');
+
+INSERT INTO notifications (user_id, notification_title, notification_message, notification_status)
+VALUES
+    (1, 'Appointment Confirmed', 'Your appointment with Dr. Brian Doctor has been confirmed for 2026-06-10 10:00.', 'UNREAD'),
+    (2, 'New Appointment', 'A new appointment request has been created for Alice Patient.', 'UNREAD');
+
+INSERT INTO audit_logs (user_id, action_performed, action_description)
+VALUES
+    (3, 'Seed data loaded', 'Initial sample users, appointments, and records inserted.');
+
 DELIMITER //
 
 CREATE TRIGGER trg_create_patient

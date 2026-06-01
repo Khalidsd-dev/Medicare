@@ -89,25 +89,29 @@ try {
                                 <p>Here you can schedule your appointment at any time that suits you.</p>
 
                                 <div class="selected-doctor-details" id="selected-doctor-details">
-                                Select a doctor above to proceed.
-                            </div>
-                            <div class="fields">
-                                <div class="fields-container">
-                                    <label for="date">Date</label>
-                                    <input type="date" id="date">
+                                    Select a doctor above to proceed.
                                 </div>
 
-                                <div class="fields-container">
-                                    <label for="time">Time</label>
-                                    <input type="time" id="time">
-                                </div>
+                                <form id="booking-form" class="fields">
+                                    <input type="hidden" id="selected-doctor-id" name="doctor_id" required>
 
-                                <div class="fields-container">
-                                    <button class="book-btn" id="confirm-book-btn" type="button" disabled>Book now</button>
-                                </div>
+                                    <div class="fields-container">
+                                        <label for="date">Date</label>
+                                        <input type="date" id="date" name="appointment_date" required>
+                                    </div>
+
+                                    <div class="fields-container">
+                                        <label for="time">Time</label>
+                                        <input type="time" id="time" name="appointment_time" required>
+                                    </div>
+
+                                    <div class="fields-container">
+                                        <button class="book-btn" id="confirm-book-btn" type="submit" disabled>Book now</button>
+                                    </div>
+                                </form>
+
+                                <p class="booking-feedback" id="booking-feedback"></p>
                             </div>
-                            <p class="booking-feedback" id="booking-feedback"></p>
-                        </div>
                         <!-- End of Schedule Details -->
 
                             <div class="appointments" id="appointments-section">

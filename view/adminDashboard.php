@@ -121,6 +121,45 @@
                                 <p>Loading user access data...</p>
                             </div>
                         </div>
+                        <div class="admin-panel">
+                            <h3>Create User Account</h3>
+                            <form id="admin-user-create-form" class="admin-create-user-form">
+                                <div class="form-row">
+                                    <label for="new-user-first-name">First Name</label>
+                                    <input type="text" id="new-user-first-name" name="first_name" required>
+                                </div>
+                                <div class="form-row">
+                                    <label for="new-user-last-name">Last Name</label>
+                                    <input type="text" id="new-user-last-name" name="last_name" required>
+                                </div>
+                                <div class="form-row">
+                                    <label for="new-user-email">Email</label>
+                                    <input type="email" id="new-user-email" name="email" autocomplete="email" required>
+                                </div>
+                                <div class="form-row">
+                                    <label for="new-user-password">Password</label>
+                                    <input type="password" id="new-user-password" name="password" autocomplete="new-password" required>
+                                </div>
+                                <div class="form-row">
+                                    <label for="new-user-role">Role</label>
+                                    <select id="new-user-role" name="role" required>
+                                        <option value="PATIENT">Patient</option>
+                                        <option value="DOCTOR">Doctor</option>
+                                        <option value="ADMIN">Admin</option>
+                                    </select>
+                                </div>
+                                <div class="form-row">
+                                    <label for="new-user-status">Account Status</label>
+                                    <select id="new-user-status" name="account_status" required>
+                                        <option value="ACTIVE">Active</option>
+                                        <option value="INACTIVE">Inactive</option>
+                                        <option value="SUSPENDED">Suspended</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="primary-button">Create Account</button>
+                                <p id="admin-create-user-feedback" class="booking-feedback"></p>
+                            </form>
+                        </div>
                     </div>
                     <div id="route-settings" class="route-page hidden">
                         <div class="page-heading">

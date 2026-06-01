@@ -440,29 +440,177 @@ body {
     text-align: center;
 }
 
+    .route-page h2 {
+        font-size: 1.9rem;
+        margin-bottom: 0.75rem;
+        color: var(--text);
+    }
 
-.hidden { 
-    display: none; 
-}
+    .route-page p {
+        color: var(--text-muted);
+        margin-bottom: 1.5rem;
+        line-height: 1.7;
+    }
 
-.admin-user-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-}
+    .medical-records-panel {
+        display: grid;
+        gap: 24px;
+        padding: 28px;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius);
+        box-shadow: var(--card-shadow);
+    }
 
-.admin-user-table th,
-.admin-user-table td {
-    padding: 0.75rem 1rem;
-    border: 1px solid #dfe3e9;
-    text-align: left;
-    font-size: 0.95rem;
-}
+    .medical-records-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 20px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #e5e7f0;
+    }
 
-.admin-user-table th {
-    background: #f8f9fb;
-    color: #2e3f53;
-}
+    .medical-records-header h3 {
+        margin-bottom: 8px;
+        color: var(--text);
+    }
+
+    .status-pill {
+        padding: 10px 16px;
+        border-radius: 999px;
+        background: rgba(79, 70, 229, 0.12);
+        color: var(--accent-color);
+        font-size: 0.9rem;
+        font-weight: 700;
+        align-self: center;
+    }
+
+    .medical-records-grid {
+        display: grid;
+        gap: 24px;
+    }
+
+    .medical-records-form {
+        display: grid;
+        gap: 18px;
+    }
+
+    .medical-records-sidebar {
+        display: grid;
+        gap: 18px;
+    }
+
+    .info-card {
+        padding: 20px;
+        border-radius: 18px;
+        background: #f8f9ff;
+        border: 1px solid rgba(79, 70, 229, 0.12);
+        box-shadow: 0 12px 24px rgba(79, 70, 229, 0.05);
+    }
+
+    .info-card h4 {
+        margin-bottom: 10px;
+        font-size: 1rem;
+        color: #1f2937;
+    }
+
+    .info-card p {
+        margin: 0;
+        color: #475569;
+        line-height: 1.7;
+        font-size: 0.95rem;
+    }
+
+    .medical-records-row {
+        display: grid;
+        gap: 14px;
+    }
+
+    .medical-records-row.full-width {
+        width: 100%;
+    }
+
+    #medical-record-form label {
+        display: block;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 8px;
+    }
+
+    #medical-record-form select,
+    #medical-record-form textarea {
+        width: 100%;
+        min-height: 48px;
+        border: 1px solid var(--card-border);
+        border-radius: 14px;
+        background: var(--panel-bg);
+        color: var(--text);
+        padding: 14px 16px;
+        font-family: inherit;
+        font-size: 0.95rem;
+        outline: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #medical-record-form select:focus,
+    #medical-record-form textarea:focus {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.08);
+    }
+
+    #medical-record-form textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    #medical-record-form .book-btn {
+        align-self: flex-start;
+        padding: 12px 26px;
+        border-radius: 12px;
+        font-weight: 700;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 8px;
+    }
+
+    #medical-record-feedback {
+        color: #1f2937;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    @media (min-width: 980px) {
+        .medical-records-grid {
+            grid-template-columns: 2fr 1fr;
+            gap: 28px;
+            align-items: start;
+        }
+
+        .medical-records-form {
+            gap: 20px;
+        }
+
+        .medical-records-row.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .medical-records-row:not(.full-width) {
+            width: 100%;
+        }
+
+        .form-actions {
+            justify-content: flex-start;
+        }
+
+        #medical-record-form .book-btn {
+            width: auto;
+        }
+    }
+
 
 .table-scroll {
     overflow-x: auto;

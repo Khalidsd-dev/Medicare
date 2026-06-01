@@ -79,11 +79,6 @@ public function loginToDatabaseAsPatientWithCredentials($email, $password) {
             return $user;
         }
 
-        if (isset($user['password']) && $user['password'] === $password) {
-            $this->upgradePasswordHash($user['user_id'], $this->hashPassword($password));
-            return $user;
-        }
-
         return false;
 
     } catch (Exception $e) {
@@ -112,11 +107,6 @@ public function loginToDatabaseAsDoctorWithCredentials($email, $password) {
             return $doctor;
         }
 
-        if (isset($doctor['password']) && $doctor['password'] === trim($password)) {
-            $this->upgradePasswordHash($doctor['user_id'], $this->hashPassword($password));
-            return $doctor;
-        }
-
         return false;
 
     } catch (Exception $e) {
@@ -141,11 +131,6 @@ public function loginToDatabaseAsAdminWithCredentials($email, $password) {
             if ($this->needsRehash($admin['password'])) {
                 $this->upgradePasswordHash($admin['user_id'], $this->hashPassword($password));
             }
-            return $admin;
-        }
-
-        if (isset($admin['password']) && $admin['password'] === $password) {
-            $this->upgradePasswordHash($admin['user_id'], $this->hashPassword($password));
             return $admin;
         }
 

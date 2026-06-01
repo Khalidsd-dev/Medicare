@@ -119,6 +119,27 @@ if (!isset($_SESSION['LOGGED_IN_USER']) || $_SESSION['LOGGED_IN_USER'] !== true 
                             <div class="approved-appointments"></div>
                         </div>
 
+                        <div class="appointments">
+                            <h3>Schedule Management</h3>
+                            <form id="appointment-status-form" class="status-management-form">
+                                <label for="status-appointment-select">Select appointment</label>
+                                <select id="status-appointment-select" required>
+                                    <option value="">Choose appointment</option>
+                                </select>
+
+                                <label for="appointment-status">Set status</label>
+                                <select id="appointment-status" required>
+                                    <option value="">Choose status</option>
+                                    <option value="CONFIRMED">Confirm</option>
+                                    <option value="COMPLETED">Complete</option>
+                                    <option value="CANCELLED">Cancel</option>
+                                </select>
+
+                                <button class="book-btn" type="submit">Update Status</button>
+                                <p id="status-update-feedback" class="booking-feedback"></p>
+                            </form>
+                        </div>
+
                         <hr>
 
                         <div class="patient-list">
@@ -132,23 +153,55 @@ if (!isset($_SESSION['LOGGED_IN_USER']) || $_SESSION['LOGGED_IN_USER'] !== true 
                         <p>Fill in medical details for a confirmed appointment, then save to complete the appointment.</p>
                         <hr>
                         <div class="medical-records-panel">
-                            <form id="medical-record-form">
-                                <label for="medical-record-appointment">Select appointment</label>
-                                <select id="medical-record-appointment" required>
-                                    <option value="">Select a confirmed appointment</option>
-                                </select>
+                            <div class="medical-records-header">
+                                <div>
+                                    <h3>Doctor record entry</h3>
+                                    <p>Use this section to store diagnosis, prescription, and treatment notes for each appointment.</p>
+                                </div>
+                                <span class="status-pill">Confirmed appointments only</span>
+                            </div>
 
-                                <label for="medical-record-diagnosis">Diagnosis</label>
-                                <textarea id="medical-record-diagnosis" rows="4" placeholder="Enter diagnosis"></textarea>
+                            <div class="medical-records-grid">
+                                <form id="medical-record-form" class="medical-records-form">
+                                    <div class="medical-records-row full-width">
+                                        <label for="medical-record-appointment">Select appointment</label>
+                                        <select id="medical-record-appointment" required>
+                                            <option value="">Select a confirmed appointment</option>
+                                        </select>
+                                    </div>
 
-                                <label for="medical-record-prescription">Prescription</label>
-                                <textarea id="medical-record-prescription" rows="3" placeholder="Enter prescription details"></textarea>
+                                    <div class="medical-records-row">
+                                        <label for="medical-record-diagnosis">Diagnosis</label>
+                                        <textarea id="medical-record-diagnosis" rows="4" placeholder="Enter diagnosis" required></textarea>
+                                    </div>
 
-                                <label for="medical-record-treatment">Treatment Notes</label>
-                                <textarea id="medical-record-treatment" rows="4" placeholder="Enter treatment notes"></textarea>
+                                    <div class="medical-records-row">
+                                        <label for="medical-record-prescription">Prescription</label>
+                                        <textarea id="medical-record-prescription" rows="3" placeholder="Enter prescription details" required></textarea>
+                                    </div>
 
-                                <button class="book-btn" type="submit">Save Medical Record & Complete Appointment</button>
-                            </form>
+                                    <div class="medical-records-row full-width">
+                                        <label for="medical-record-treatment">Treatment Notes</label>
+                                        <textarea id="medical-record-treatment" rows="4" placeholder="Enter treatment notes" required></textarea>
+                                    </div>
+
+                                    <div class="form-actions">
+                                        <button class="book-btn" type="submit">Save Medical Record & Complete Appointment</button>
+                                    </div>
+                                </form>
+
+                                <aside class="medical-records-sidebar">
+                                    <div class="info-card">
+                                        <h4>Tips for accurate records</h4>
+                                        <p>Keep notes clear and concise. Record the main diagnosis, prescribed treatment, and follow-up instructions.</p>
+                                    </div>
+                                    <div class="info-card">
+                                        <h4>Why it matters</h4>
+                                        <p>Well-maintained records improve patient follow-up and support structured care across the team.</p>
+                                    </div>
+                                </aside>
+                            </div>
+
                             <div id="medical-record-feedback" class="booking-feedback"></div>
                         </div>
                     </div>
