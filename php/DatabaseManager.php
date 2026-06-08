@@ -29,8 +29,8 @@ public function __construct() {
 }
 
 
-private function verifyPassword(string $password, string $hash): bool {
-    return password_verify($password, $hash);
+private function verifyPassword(string $password, $passwordhash) {
+    return password_verify($password, $passwordhash);
 }
 
 
@@ -54,6 +54,7 @@ function login($email, $password) {
     $stmt->execute([$email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
+   
     if(!$user) {
         return false; // User not found
     }

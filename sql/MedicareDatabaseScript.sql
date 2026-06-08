@@ -169,7 +169,7 @@ CREATE TABLE audit_logs (
 -- Note: seeded patient, doctor, and admin accounts all use password "password".
 INSERT INTO users (first_name, last_name, email, password, gender, user_role, account_status)
 VALUES
-    ('Alice', 'Patient', 'patient@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.T8eQYQxT4HqQX0kW', 'FEMALE', 'PATIENT', 'ACTIVE'),
+    ('Alice', 'Patient', 'patient@example.com', '$2y$10$A5spv0x5wNMzMAIR5QJE/uFe07mXceAe3fRe228125DuCoYCYC5FS', 'FEMALE', 'PATIENT', 'ACTIVE'),
     ('Brian', 'Doctor', 'doctor@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.T8eQYQxT4HqQX0kW', 'MALE', 'DOCTOR', 'ACTIVE'),
     ('Claire', 'Admin', 'admin@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.T8eQYQxT4HqQX0kW', 'OTHER', 'ADMIN', 'ACTIVE'),
     ('David', 'Patient', 'patient2@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.T8eQYQxT4HqQX0kW', 'MALE', 'PATIENT', 'ACTIVE'),
