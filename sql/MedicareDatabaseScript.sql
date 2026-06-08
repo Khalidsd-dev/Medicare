@@ -1,3 +1,8 @@
+CREATE DATABASE IF NOT EXISTS medicare;
+USE medicare;
+
+
+
 CREATE TABLE users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
 
@@ -58,28 +63,6 @@ CREATE TABLE doctors (
 );
 
 
-CREATE TABLE departments (
-    department_id INT AUTO_INCREMENT PRIMARY KEY,
-    department_name VARCHAR(100) UNIQUE NOT NULL,
-    department_description TEXT
-);
-
-CREATE TABLE doctor_departments (
-    doctor_department_id INT AUTO_INCREMENT PRIMARY KEY,
-
-    doctor_id INT NOT NULL,
-    department_id INT NOT NULL,
-
-    CONSTRAINT fk_dd_doctor
-    FOREIGN KEY (doctor_id)
-    REFERENCES doctors(doctor_id)
-    ON DELETE CASCADE,
-
-    CONSTRAINT fk_dd_department
-    FOREIGN KEY (department_id)
-    REFERENCES departments(department_id)
-    ON DELETE CASCADE
-);
 
 CREATE TABLE appointments (
     appointment_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -90,16 +73,12 @@ CREATE TABLE appointments (
     appointment_date DATE NOT NULL,
     appointment_time TIME NOT NULL,
 
-    appointment_reason TEXT,
-
     appointment_status ENUM(
         'REQUESTED',
         'CONFIRMED',
         'COMPLETED',
         'CANCELLED'
     ) DEFAULT 'REQUESTED',
-
-    cancellation_reason TEXT,
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
@@ -117,41 +96,6 @@ CREATE TABLE appointments (
     ON DELETE CASCADE
 );
 
-CREATE TABLE appointment_status_history (
-    history_id INT AUTO_INCREMENT PRIMARY KEY,
-
-    appointment_id INT NOT NULL,
-
-    old_status ENUM(
-        'REQUESTED',
-        'CONFIRMED',
-        'COMPLETED',
-        'CANCELLED'
-    ),
-
-    new_status ENUM(
-        'REQUESTED',
-        'CONFIRMED',
-        'COMPLETED',
-        'CANCELLED'
-    ) NOT NULL,
-
-    changed_by INT,
-
-    notes TEXT,
-
-    changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT fk_status_history_appointment
-    FOREIGN KEY (appointment_id)
-    REFERENCES appointments(appointment_id)
-    ON DELETE CASCADE,
-
-    CONSTRAINT fk_status_history_user
-    FOREIGN KEY (changed_by)
-    REFERENCES users(user_id)
-    ON DELETE SET NULL
-);
 
 
 CREATE TABLE medical_records (
@@ -219,100 +163,50 @@ CREATE TABLE audit_logs (
     ON DELETE SET NULL
 );
 
+
+
 -- Sample data for initial testing
 -- Note: seeded patient, doctor, and admin accounts all use password "password".
 INSERT INTO users (first_name, last_name, email, password, gender, user_role, account_status)
 VALUES
     ('Alice', 'Patient', 'patient@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.T8eQYQxT4HqQX0kW', 'FEMALE', 'PATIENT', 'ACTIVE'),
     ('Brian', 'Doctor', 'doctor@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.T8eQYQxT4HqQX0kW', 'MALE', 'DOCTOR', 'ACTIVE'),
-    ('Claire', 'Admin', 'admin@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.T8eQYQxT4HqQX0kW', 'OTHER', 'ADMIN', 'ACTIVE');
+    ('Claire', 'Admin', 'admin@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.T8eQYQxT4HqQX0kW', 'OTHER', 'ADMIN', 'ACTIVE'),
+    ('David', 'Patient', 'patient2@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.T8eQYQxT4HqQX0kW', 'MALE', 'PATIENT', 'ACTIVE'),
+    ('Emily', 'Doctor', 'doctor2@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.T8eQYQxT4HqQX0kW', 'FEMALE', 'DOCTOR', 'ACTIVE');
 
-INSERT INTO departments (department_name, department_description)
-VALUES
-    ('General Medicine', 'Primary care and general consultations'),
-    ('Cardiology', 'Heart and cardiovascular care');
+INSERT INTO patients (patient_id, date_of_birth, phone_number, address, blood_group, emergency_contact)
+VALUES  (1, '1990-01-01', '0781456872', '123 Main St, Anytown, USA', 'O+', 'John Doe - 555-5678'),
+        (4, '1985-05-15', '0675421364', '456 Elm St, Othertown, USA', 'A-', 'Jane Doe - 555-4321');
 
-INSERT INTO doctor_departments (doctor_id, department_id)
-VALUES
-    (2, 1),
-    (2, 2);
+INSERT INTO doctors (doctor_id, specialization, doctor_phone, consultation_fee, doctor_status)
+VALUES  (2, 'Cardiologist', '555-5678', 100.00, 'AVAILABLE'),
+        (5, 'Dermatologist', '555-4321', 80.00, 'AVAILABLE');
 
-INSERT INTO appointments (patient_id, doctor_id, appointment_date, appointment_time, appointment_reason, appointment_status, created_at, updated_at)
+INSERT INTO appointments (patient_id, doctor_id, appointment_date, appointment_time,  appointment_status, created_at, updated_at)
 VALUES
-    (1, 2, '2026-06-10', '10:00:00', 'Routine checkup', 'CONFIRMED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-INSERT INTO appointment_status_history (appointment_id, old_status, new_status, changed_by, notes)
-VALUES
-    (1, 'REQUESTED', 'CONFIRMED', 2, 'Confirmed by doctor.');
+    (1, 2, '2026-06-10', '10:00:00', 'CONFIRMED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (4, 5, '2026-06-11', '14:00:00', 'REQUESTED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (1, 5, '2026-06-12', '09:00:00', 'CANCELLED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 INSERT INTO medical_records (patient_id, doctor_id, appointment_id, diagnosis, prescription, treatment_notes)
 VALUES
-    (1, 2, 1, 'Healthy with mild fatigue', 'Vitamin D supplements', 'Advise follow-up in four weeks');
+    (1, 2, 1, 'Healthy with mild fatigue', 'Vitamin D supplements', 'Advise follow-up in four weeks'),
+    (4, 5, 2, 'Mild eczema', 'Topical corticosteroids', 'Recommend moisturizing and follow-up in two weeks'),
+    (1, 5, 3, 'Cancelled appointment', 'No prescription', 'Appointment was cancelled by the patient.');
 
 INSERT INTO notifications (user_id, notification_title, notification_message, notification_status)
 VALUES
     (1, 'Appointment Confirmed', 'Your appointment with Dr. Brian Doctor has been confirmed for 2026-06-10 10:00.', 'UNREAD'),
-    (2, 'New Appointment', 'A new appointment request has been created for Alice Patient.', 'UNREAD');
+    (2, 'New Appointment', 'A new appointment request has been created for Alice Patient.', 'UNREAD'),
+    (4, 'Appointment Requested', 'Your appointment request with Dr. Emily Doctor is pending confirmation.', 'UNREAD'),
+    (5, 'Appointment Cancelled', 'Your appointment with Dr. Emily Doctor has been cancelled.', 'UNREAD');
 
 INSERT INTO audit_logs (user_id, action_performed, action_description)
 VALUES
-    (3, 'Seed data loaded', 'Initial sample users, appointments, and records inserted.');
+    (3, 'Seed data loaded', 'Initial sample users, appointments, and records inserted.'),
+    (1, 'Logged in', 'Patient Alice Patient logged in.'),
+    (2, 'Logged in', 'Doctor Brian Doctor logged in.'),
+    (4, 'Logged in', 'Patient David Patient logged in.'),
+    (5, 'Logged in', 'Doctor Emily Doctor logged in.');
 
-DELIMITER //
-
-CREATE TRIGGER trg_create_patient
-AFTER INSERT ON users
-FOR EACH ROW
-BEGIN
-    IF NEW.user_role = 'PATIENT' THEN
-        INSERT INTO patients(patient_id)
-        VALUES (NEW.user_id);
-    END IF;
-END //
-
-DELIMITER ;
-
-DELIMITER //
-
-CREATE TRIGGER trg_create_doctor
-AFTER INSERT ON users
-FOR EACH ROW
-BEGIN
-    IF NEW.user_role = 'DOCTOR' THEN
-        INSERT INTO doctors(doctor_id)
-        VALUES (NEW.user_id);
-    END IF;
-END //
-
-DELIMITER ;
-
-CREATE VIEW appointment_view AS
-SELECT
-    a.appointment_id,
-    a.appointment_date,
-    a.appointment_time,
-    a.appointment_status,
-
-    p.patient_id,
-    pu.first_name AS patient_first_name,
-    pu.last_name AS patient_last_name,
-
-    d.doctor_id,
-    du.first_name AS doctor_first_name,
-    du.last_name AS doctor_last_name,
-
-    a.created_at
-
-FROM appointments a
-
-INNER JOIN patients p
-    ON a.patient_id = p.patient_id
-
-INNER JOIN users pu
-    ON p.patient_id = pu.user_id
-
-INNER JOIN doctors d
-    ON a.doctor_id = d.doctor_id
-
-INNER JOIN users du
-    ON d.doctor_id = du.user_id;
