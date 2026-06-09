@@ -19,7 +19,7 @@ class Executor {
     }
 
     public function saveUserCredentials($email, $password) {
-        return $this->databaseManager->SaveUserCreadentials($email, $password);
+        return $this->databaseManager->SaveUserCredentials($email, $password);
     }
 }
 

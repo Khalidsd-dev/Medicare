@@ -21,7 +21,6 @@ try {
             a.doctor_id,
             a.appointment_date,
             a.appointment_time,
-            a.appointment_reason,
             a.appointment_status,
             a.created_at,
             a.updated_at,

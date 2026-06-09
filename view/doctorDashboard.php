@@ -87,26 +87,7 @@ if (!isset($_SESSION['LOGGED_IN_USER']) || $_SESSION['LOGGED_IN_USER'] !== true 
 
                     <div id="route-appointments" class="route-page hidden">
                         <h2>Appointment Management</h2>
-                        <hr>
-                        <div class="search-area">
-                            <div class="search-bar">
-                                <i class='bx bx-search'></i>
-                                <input class="searchbar" type="text" placeholder="Search patients...">
-                                <button class="search-btn" type="button">Search</button>
-                            </div>
-
-                            <div class="filter">
-                                <i class='bx bx-filter-alt'></i>
-                                <select class="filter-options">
-                                    <option value="">Filter by</option>
-                                    <option value="name">Name</option>
-                                    <option value="id">Patient ID</option>
-                                    <option value="doctor">Doctor</option>
-                                    <option value="date">Appointment Date</option>
-                                </select>
-                            </div>
-                        </div>
-
+                    
                         <hr>
 
                         <div class="appointments">

@@ -17,7 +17,7 @@ try {
     }
 
     $stmt = $pdo->prepare(
-        'SELECT a.appointment_id, a.patient_id, a.doctor_id, a.appointment_date, a.appointment_time, a.appointment_reason, a.appointment_status, a.created_at, a.updated_at, 
+        'SELECT a.appointment_id, a.patient_id, a.doctor_id, a.appointment_date, a.appointment_time, a.appointment_status, a.created_at, a.updated_at, 
                 u.first_name AS patient_first_name, u.last_name AS patient_last_name, 
                 du.first_name AS doctor_first_name, du.last_name AS doctor_last_name, d.specialization AS doctor_specialty
          FROM appointments a
