@@ -41,15 +41,15 @@ $_SESSION['USER_INITIALS'] = strtoupper(
 
 switch ($user['user_role']) {
     case 'PATIENT':
-        header('Location: patient_dashboard.php');
+        header('Location: ../view/patientDashboard.php');
         exit();
 
     case 'DOCTOR':
-        header('Location: doctor_dashboard.php');
+        header('Location: ../view/doctorDashboard.php');
         exit();
 
     case 'ADMIN':
-        header('Location: admin_dashboard.php');
+        header('Location: ../view/adminDashboard.php');
         exit();
 
     default:

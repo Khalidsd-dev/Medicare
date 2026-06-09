@@ -2,7 +2,6 @@ CREATE DATABASE IF NOT EXISTS medicare;
 USE medicare;
 
 
-
 CREATE TABLE users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
 
@@ -170,10 +169,10 @@ CREATE TABLE audit_logs (
 INSERT INTO users (first_name, last_name, email, password, gender, user_role, account_status)
 VALUES
     ('Alice', 'Patient', 'patient@example.com', '$2y$10$A5spv0x5wNMzMAIR5QJE/uFe07mXceAe3fRe228125DuCoYCYC5FS', 'FEMALE', 'PATIENT', 'ACTIVE'),
-    ('Brian', 'Doctor', 'doctor@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.T8eQYQxT4HqQX0kW', 'MALE', 'DOCTOR', 'ACTIVE'),
-    ('Claire', 'Admin', 'admin@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.T8eQYQxT4HqQX0kW', 'OTHER', 'ADMIN', 'ACTIVE'),
-    ('David', 'Patient', 'patient2@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.T8eQYQxT4HqQX0kW', 'MALE', 'PATIENT', 'ACTIVE'),
-    ('Emily', 'Doctor', 'doctor2@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.T8eQYQxT4HqQX0kW', 'FEMALE', 'DOCTOR', 'ACTIVE');
+    ('Brian', 'Doctor', 'doctor@example.com', ' $2y$10$A5spv0x5wNMzMAIR5QJE/uFe07mXceAe3fRe228125DuCoYCYC5FS', 'MALE', 'DOCTOR', 'ACTIVE'),
+    ('Claire', 'Admin', 'admin@example.com', '$2y$10$A5spv0x5wNMzMAIR5QJE/uFe07mXceAe3fRe228125DuCoYCYC5FS', 'OTHER', 'ADMIN', 'ACTIVE'),
+    ('David', 'Patient', 'patient2@example.com', '$2y$10$A5spv0x5wNMzMAIR5QJE/uFe07mXceAe3fRe228125DuCoYCYC5FS', 'MALE', 'PATIENT', 'ACTIVE'),
+    ('Emily', 'Doctor', 'doctor2@example.com', '$2y$10$A5spv0x5wNMzMAIR5QJE/uFe07mXceAe3fRe228125DuCoYCYC5FS', 'FEMALE', 'DOCTOR', 'ACTIVE');
 
 INSERT INTO patients (patient_id, date_of_birth, phone_number, address, blood_group, emergency_contact)
 VALUES  (1, '1990-01-01', '0781456872', '123 Main St, Anytown, USA', 'O+', 'John Doe - 555-5678'),
@@ -209,4 +208,3 @@ VALUES
     (2, 'Logged in', 'Doctor Brian Doctor logged in.'),
     (4, 'Logged in', 'Patient David Patient logged in.'),
     (5, 'Logged in', 'Doctor Emily Doctor logged in.');
-

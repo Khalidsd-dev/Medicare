@@ -173,7 +173,7 @@ public function fetchAllAppointments() {
     }
 }
 
-public function SaveUserCreadentials($email, $password) {
+public function SaveUserCredentials($email, $password) {
     try {
         $pdo = require __DIR__ . '/db_connect.php';
         $hashedPassword = $this->hashPassword($password);
