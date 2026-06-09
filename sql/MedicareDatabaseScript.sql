@@ -168,11 +168,11 @@ CREATE TABLE audit_logs (
 -- Note: seeded patient, doctor, and admin accounts all use password "password".
 INSERT INTO users (first_name, last_name, email, password, gender, user_role, account_status)
 VALUES
-    ('Alice', 'Patient', 'patient@example.com', '$2y$10$A5spv0x5wNMzMAIR5QJE/uFe07mXceAe3fRe228125DuCoYCYC5FS', 'FEMALE', 'PATIENT', 'ACTIVE'),
-    ('Brian', 'Doctor', 'doctor@example.com', ' $2y$10$A5spv0x5wNMzMAIR5QJE/uFe07mXceAe3fRe228125DuCoYCYC5FS', 'MALE', 'DOCTOR', 'ACTIVE'),
-    ('Claire', 'Admin', 'admin@example.com', '$2y$10$A5spv0x5wNMzMAIR5QJE/uFe07mXceAe3fRe228125DuCoYCYC5FS', 'OTHER', 'ADMIN', 'ACTIVE'),
-    ('David', 'Patient', 'patient2@example.com', '$2y$10$A5spv0x5wNMzMAIR5QJE/uFe07mXceAe3fRe228125DuCoYCYC5FS', 'MALE', 'PATIENT', 'ACTIVE'),
-    ('Emily', 'Doctor', 'doctor2@example.com', '$2y$10$A5spv0x5wNMzMAIR5QJE/uFe07mXceAe3fRe228125DuCoYCYC5FS', 'FEMALE', 'DOCTOR', 'ACTIVE');
+    ('Alice', 'De Gough', 'patient@example.com', '$2y$10$A5spv0x5wNMzMAIR5QJE/uFe07mXceAe3fRe228125DuCoYCYC5FS', 'FEMALE', 'PATIENT', 'ACTIVE'),
+    ('Brian', 'Cole', 'patient2@example.com', '$2y$10$A5spv0x5wNMzMAIR5QJE/uFe07mXceAe3fRe228125DuCoYCYC5FS', 'MALE', 'PATIENT', 'ACTIVE'),
+    ('Claire', 'Venis', 'admin@example.com', '$2y$10$A5spv0x5wNMzMAIR5QJE/uFe07mXceAe3fRe228125DuCoYCYC5FS', 'OTHER', 'ADMIN', 'ACTIVE'),
+    ('David', 'Beckham', 'patient2@example.com', '$2y$10$A5spv0x5wNMzMAIR5QJE/uFe07mXceAe3fRe228125DuCoYCYC5FS', 'MALE', 'PATIENT', 'ACTIVE'),
+    ('Emily', 'Spear', 'doctor2@example.com', '$2y$10$A5spv0x5wNMzMAIR5QJE/uFe07mXceAe3fRe228125DuCoYCYC5FS', 'FEMALE', 'DOCTOR', 'ACTIVE');
 
 INSERT INTO patients (patient_id, date_of_birth, phone_number, address, blood_group, emergency_contact)
 VALUES  (1, '1990-01-01', '0781456872', '123 Main St, Anytown, USA', 'O+', 'John Doe - 555-5678'),
