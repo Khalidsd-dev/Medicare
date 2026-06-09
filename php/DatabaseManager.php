@@ -28,10 +28,18 @@ public function __construct() {
     // The constructor is currently empty, but it can be used to initialize any necessary properties or dependencies in the future.
 }
 
+private function hashPassword(string $password): string {
+    return password_hash($password, PASSWORD_DEFAULT);
+}
 
 private function verifyPassword(string $password, $passwordhash) {
     return password_verify($password, $passwordhash);
 }
+
+private function needsRehash(string $hash): bool {
+    return password_needs_rehash($hash, PASSWORD_DEFAULT);
+}
+
 
 
 /*
@@ -161,6 +169,20 @@ public function fetchAllAppointments() {
         }
     } catch (\Throwable $th) {
         //throw $th;
+        die("Database connection failed: " . $th->getMessage());
+    }
+}
+
+public function SaveUserCreadentials($email, $password) {
+    try {
+        $pdo = require __DIR__ . '/db_connect.php';
+        $hashedPassword = $this->hashPassword($password);
+        $stmt = $pdo->prepare(
+            "INSERT INTO users (email, password, first_name, last_name, gender, user_role, account_status) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        );
+        $stmt->execute([$email, $hashedPassword, 'New', 'User', 'OTHER', 'PATIENT', 'ACTIVE']);
+        return $pdo->lastInsertId();
+    } catch (\Throwable $th) {
         die("Database connection failed: " . $th->getMessage());
     }
 }

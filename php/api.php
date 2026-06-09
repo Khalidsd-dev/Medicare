@@ -21,23 +21,6 @@ if (isset($_SESSION['LOGGED_IN_USER']) && $_SESSION['LOGGED_IN_USER'] === true) 
         'error' => 'User not logged in'
     ]);
 }
-
-
-class API {
-    // This class can be expanded to include more API endpoints and functionality as needed
-
-    public function fetchAllAppointments() {
-        // This method can be implemented to fetch all appointments for the logged-in user
-        // It would typically involve querying the database and returning the results as JSON
-
-        // Example implementation (this is just a placeholder and should be replaced with actual database logic):
-
-        $appointments = [
-        ];
-
-        echo json_encode($appointments);
-    }
-}
 ?>
 
 
