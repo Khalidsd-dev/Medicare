@@ -18,9 +18,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const approvedAppointments = document.querySelector('.approved-appointments');
     const patientList = document.querySelector('.patient-list-content');
     const appointmentCountLabel = document.querySelector('.appt-count');
-    const searchBtn = document.querySelector('.search-btn');
-    const searchInput = document.querySelector('.searchbar');
-    const filterOptions = document.querySelector('.filter-options');
     const bookingForm = document.getElementById('booking-form');
     const selectedDoctorIdInput = document.getElementById('selected-doctor-id');
     const medicalRecordForm = document.getElementById('medical-record-form');
@@ -33,8 +30,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const statusAppointmentSelect = document.getElementById('status-appointment-select');
     const appointmentStatusSelect = document.getElementById('appointment-status');
     const statusUpdateFeedback = document.getElementById('status-update-feedback');
-    const adminUserCreateForm = document.getElementById('admin-user-create-form');
-    const adminCreateUserFeedback = document.getElementById('admin-create-user-feedback');
     const routeLinks = document.querySelectorAll('.route-link');
 
  // Route to pages
@@ -92,9 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (isAdminPage) {
-        if (adminUserCreateForm) {
-            adminUserCreateForm.addEventListener('submit', handleAdminUserCreateSubmit);
-        }
+        
         
         const toggleUserFormBtn = document.getElementById('toggle-user-form-btn');
         const userFormContainer = document.getElementById('admin-user-form-container');
@@ -125,22 +118,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (isDoctorPage && doctorAppointments) {
         fetchDoctorAppointments();
-
-        if (searchBtn) {
-            searchBtn.addEventListener('click', handleDoctorSearch);
-        }
-
-        if (searchInput) {
-            searchInput.addEventListener('keyup', (event) => {
-                if (event.key === 'Enter') {
-                    handleDoctorSearch();
-                }
-            });
-        }
-
-        if (filterOptions) {
-            filterOptions.addEventListener('change', handleDoctorSearch);
-        }
 
         if (medicalRecordForm) {
             medicalRecordForm.addEventListener('submit', handleMedicalRecordSubmit);
@@ -819,97 +796,6 @@ document.addEventListener('DOMContentLoaded', function () {
         statusUpdateFeedback.style.color = isError ? '#c00' : '#0a7';
     }
 
-    function handleAdminUserCreateSubmit(event) {
-        event.preventDefault();
-        if (!adminUserCreateForm) return;
-
-        const firstName = document.getElementById('admin-first-name')?.value.trim();
-        const lastName = document.getElementById('admin-last-name')?.value.trim();
-        const email = document.getElementById('admin-email')?.value.trim();
-        const password = document.getElementById('admin-password')?.value;
-        const gender = document.getElementById('admin-gender')?.value;
-        const role = document.getElementById('admin-role')?.value;
-        const accountStatus = document.getElementById('admin-account-status')?.value;
-
-        if (!firstName || !lastName || !email || !password || !gender || !role || !accountStatus) {
-            showAdminCreateUserFeedback('All fields are required.', true);
-            return;
-        }
-
-        fetch('../php/adminCreateUser.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ first_name: firstName, last_name: lastName, email, password, gender, role, account_status: accountStatus })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (!data || data.error) {
-                    showAdminCreateUserFeedback(data.error || 'Unable to create user account.', true);
-                    return;
-                }
-
-                showAdminCreateUserFeedback(data.message || 'User account created successfully.');
-                adminUserCreateForm.reset();
-                const userFormContainer = document.getElementById('admin-user-form-container');
-                if (userFormContainer) {
-                    userFormContainer.style.display = 'none';
-                }
-                fetchAdminUsers();
-            })
-            .catch(error => {
-                console.error('Error creating admin user:', error);
-                showAdminCreateUserFeedback('A network error occurred while creating the user.', true);
-            });
-    }
-
-    function showAdminCreateUserFeedback(message, isError = false) {
-        if (!adminCreateUserFeedback) return;
-        adminCreateUserFeedback.textContent = message;
-        adminCreateUserFeedback.style.color = isError ? '#c00' : '#0a7';
-    }
-
-    function handleDoctorSearch() {
-        const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
-        const filter = filterOptions ? filterOptions.value : '';
-        const filteredAppointments = filterAppointments(doctorAppointmentCache, query, filter);
-        renderDoctorAppointments(filteredAppointments);
-        renderPatientList(filteredAppointments);
-    }
-
-    function filterAppointments(appointments, query, filter) {
-        if (!query) {
-            return appointments;
-        }
-
-        return appointments.filter(appointment => {
-            const patientName = `${appointment.patient_first_name || ''} ${appointment.patient_last_name || ''}`.trim().toLowerCase();
-            const patientId = appointment.patient_id ? appointment.patient_id.toString() : '';
-            const doctorName = `${appointment.doctor_first_name || ''} ${appointment.doctor_last_name || ''}`.trim().toLowerCase();
-            const appointmentDate = appointment.appointment_date ? appointment.appointment_date.toLowerCase() : '';
-            const doctorSpecialty = appointment.doctor_specialty ? appointment.doctor_specialty.toLowerCase() : '';
-
-            switch (filter) {
-                case 'name':
-                    return patientName.includes(query);
-                case 'id':
-                    return patientId.includes(query);
-                case 'doctor':
-                    return doctorName.includes(query) || doctorSpecialty.includes(query);
-                case 'date':
-                    return appointmentDate.includes(query);
-                default:
-                    return (
-                        patientName.includes(query) ||
-                        patientId.includes(query) ||
-                        doctorName.includes(query) ||
-                        doctorSpecialty.includes(query) ||
-                        appointmentDate.includes(query)
-                    );
-            }
-        });
-    }
 
     function renderPatientList(appointments) {
         if (!patientList) return;
