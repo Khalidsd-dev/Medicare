@@ -91,11 +91,23 @@
                     </div>
                     <div id="route-appointments" class="route-page hidden">
                         <h2 class="admin-title">Appointment Management</h2>
-                        <p>Review and manage appointment requests, confirmations, and scheduling at a system level.</p>
+
+                        <p>
+                            Review and manage appointment requests,
+                            confirmations, and scheduling at a system level.
+                        </p>
+
                         <hr>
+
                         <div class="admin-panel">
-                            <p>Use this section to keep appointments organized and to ensure every request is handled properly.</p>
+                            <p>
+                                Use this section to keep appointments organized
+                                and to ensure every request is handled properly.
+                            </p>
                         </div>
+
+                        <!-- APPOINTMENTS WILL RENDER HERE -->
+                        <div id="admin-appointments-container"></div>
                     </div>
                     <div id="route-user-access" class="route-page hidden">
                         <h2 class="admin-title">User Access</h2>

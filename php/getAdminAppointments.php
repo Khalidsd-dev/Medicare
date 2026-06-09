@@ -15,25 +15,38 @@ try {
     }
 
     $stmt = $pdo->prepare(
-        'SELECT 
-            a.appointment_id,
-            a.patient_id,
-            a.doctor_id,
-            a.appointment_date,
-            a.appointment_time,
-            a.appointment_status,
-            a.created_at,
-            a.updated_at,
-            p.first_name AS patient_first_name,
-            p.last_name AS patient_last_name,
-            d.first_name AS doctor_first_name,
-            d.last_name AS doctor_last_name,
-            d.specialization
-         FROM appointments a
-         LEFT JOIN users p ON a.patient_id = p.user_id
-         LEFT JOIN users d ON a.doctor_id = d.user_id
-         ORDER BY a.appointment_date DESC, a.appointment_time DESC'
-    );
+    'SELECT 
+        a.appointment_id,
+        a.patient_id,
+        a.doctor_id,
+        a.appointment_date,
+        a.appointment_time,
+        a.appointment_status,
+        a.created_at,
+        a.updated_at,
+
+        p.first_name AS patient_first_name,
+        p.last_name AS patient_last_name,
+
+        du.first_name AS doctor_first_name,
+        du.last_name AS doctor_last_name,
+
+        doc.specialization
+
+     FROM appointments a
+
+     LEFT JOIN users p 
+        ON a.patient_id = p.user_id
+
+     LEFT JOIN users du 
+        ON a.doctor_id = du.user_id
+
+     LEFT JOIN doctors doc
+        ON a.doctor_id = doc.doctor_id
+
+     ORDER BY a.appointment_date DESC,
+              a.appointment_time DESC'
+);
     $stmt->execute();
     $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

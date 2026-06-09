@@ -476,7 +476,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </div>
                                         <p><strong>Date:</strong> ${escapeHtml(apt.appointment_date)}</p>
                                         <p><strong>Time:</strong> ${escapeHtml(apt.appointment_time)}</p>
-                                        <p><strong>Reason:</strong> ${escapeHtml(apt.appointment_reason || 'N/A')}</p>
                                         <p><strong>Created:</strong> ${escapeHtml(apt.created_at || '—')}</p>
                                     </div>
                                 `;
