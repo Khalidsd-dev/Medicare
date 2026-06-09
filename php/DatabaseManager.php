@@ -173,6 +173,9 @@ public function fetchAllAppointments() {
     }
 }
 
+
+
+
 public function SaveUserCredentials($email, $password) {
     try {
         $pdo = require __DIR__ . '/db_connect.php';
@@ -187,6 +190,57 @@ public function SaveUserCredentials($email, $password) {
     }
 }
 
+public function viewAuditlogs() {
+    try {
+        $pdo = require __DIR__ . '/db_connect.php';
+        if (!($pdo instanceof PDO)) {
+            # code...
+            throw new RuntimeException("Databse connection did not return an pdo instance.");
+        }
+
+        // Join users with audit_logs to get user_name
+        $sql = "
+            SELECT 
+                al.log_id,
+                CONCAT(u.first_name, ' ', u.last_name) AS user_name,
+                al.action_performed,
+                al.action_description,
+                al.created_at
+            FROM audit_logs al
+            LEFT JOIN users u ON al.user_id = u.user_id
+            ORDER BY al.created_at DESC
+        ";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+
+        if ($stmt->rowCount() > 0) {
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+        else {
+            return []; // return empty array if their are no logs
+        }
+        
+    } catch (\Throwable $th) {
+        die("Database error" . $th->getMessage());
+    }
+} 
+
+
+public function viewNotifications() {
+    try {
+        $pdo = require __DIR__ . '/db_connect.php';
+        if (!($pdo instanceof PDO)) {
+            throw new \RuntimeException('Database connection did not return a PDO instance');
+        }
+        $stmt = $pdo->prepare("SELECT * FROM notifications");
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); // Always return array
+    } catch (\Throwable $th) {
+        die("Database connection failed: " . $th->getMessage());
+    }
+}
 
 
 }

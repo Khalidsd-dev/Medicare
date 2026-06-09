@@ -21,6 +21,14 @@ class Executor {
     public function saveUserCredentials($email, $password) {
         return $this->databaseManager->SaveUserCredentials($email, $password);
     }
+
+    public function viewNotification() {
+        return $this->databaseManager->viewNotifications();
+    }
+
+    function viewLogs() {
+        return $this->databaseManager->viewAuditlogs();
+    }
 }
 
 

@@ -1011,6 +1011,10 @@ document.addEventListener('DOMContentLoaded', function () {
             fetchDoctorAppointments();
         }
 
+        if (isDoctorPage && route === 'messages') {
+            fetchMessages();
+        }
+
         if (isDoctorPage && route === 'medical-records') {
             renderMedicalRecordForm(doctorAppointmentCache);
         }
@@ -1025,6 +1029,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (isAdminPage && route === 'user-access') {
             fetchAdminUsers();
+        }
+
+        if (isAdminPage && route === 'messages') {
+            fetchLogs();
         }
 
         if (isAdminPage && route === 'settings') {
@@ -1159,4 +1167,86 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.error('Error fetching user data:', error);
             });
     }
+
+
+   function fetchMessages() {
+    fetch('../php/getNotifications.php')
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('route-messages');
+            if (!container) return;
+
+            if (!data.success) {
+                container.innerHTML = '<p>No messages to display.</p>';
+                return;
+            }
+
+            const messages = data.messages || [];
+            if (messages.length === 0) {
+                container.innerHTML = '<p>No messages to display.</p>';
+                return;
+            }
+
+            const html = messages.map(msg => `
+                <div class="message-card">
+                    <h4>${escapeHtml(msg.notification_title)}</h4>
+                    <p>${escapeHtml(msg.notification_message)}</p>
+                    <small><b>Received: </b> ${escapeHtml(msg.created_at || 'N/A')}</small>
+                </div>
+            `).join('');
+
+            container.innerHTML = `
+                <h2>Messages</h2>
+                ${html}
+            `;
+        })
+        .catch(err => {
+            console.error('Error fetching messages:', err);
+            document.getElementById('route-messages').innerHTML = '<p>Unable to load messages.</p>';
+        });
+}
+
+
+function fetchLogs() {
+    fetch('../php/getLogs.php')
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('route-messages');
+            if (!container) return;
+
+            if (!data.success) {
+                container.innerHTML = '<p>No messages to display.</p>';
+                return;
+            }
+
+            const logs = data.logs || [];
+            if (logs.length === 0) {
+                container.innerHTML = '<p>No messages to display.</p>';
+                return;
+            }
+
+            const html = logs.map(msg => `
+                <div class="message-card">
+                    <h4>${escapeHtml(msg.user_name)}</h4>
+                    <strong>${escapeHtml(msg.action_performed)}</strong>
+                    <p>${escapeHtml(msg.action_description)}</p>
+                    <small><b>Received:</b> ${escapeHtml(msg.created_at || 'N/A')}</small>
+                </div>
+            `).join('');
+
+            container.innerHTML = `
+                <h2>Audit Logs</h2>
+                ${html}
+            `;
+        })
+        .catch(err => {
+            console.error('Error fetching messages:', err);
+            document.getElementById('route-messages').innerHTML = '<p>Unable to load messages.</p>';
+        });
+}
+
 });
+
+
+
+

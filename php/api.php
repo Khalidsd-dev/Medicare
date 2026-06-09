@@ -21,6 +21,11 @@ if (isset($_SESSION['LOGGED_IN_USER']) && $_SESSION['LOGGED_IN_USER'] === true) 
         'error' => 'User not logged in'
     ]);
 }
+
+
+
+
+
 ?>
 
 
