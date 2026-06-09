@@ -87,19 +87,49 @@ if (!isset($_SESSION['LOGGED_IN_USER']) || $_SESSION['LOGGED_IN_USER'] !== true 
 
                     <div id="route-appointments" class="route-page hidden">
                         <h2>Appointment Management</h2>
-                    
-                        <hr>
+                        <p>Review pending requests, manage confirmed appointments, and view your patient list.</p>
 
-                        <div class="appointments">
-                            <h3>Pending Appointments</h3>
-                            <div class="doctor-appointments"></div>
+                        <div class="appointments-columns">
+                            <!-- Pending Appointments Column -->
+                            <div class="appointments-column">
+                                <div class="column-header pending">
+                                    <span class="column-icon"><i class='bx bx-time-five'></i></span>
+                                    <h3>Pending Requests</h3>
+                                    <span class="column-count" id="pending-count">0</span>
+                                </div>
+                                <div class="column-body doctor-appointments">
+                                    <!-- Pending appointment cards go here -->
+                                </div>
+                            </div>
+
+                            <!-- Approved Appointments Column -->
+                            <div class="appointments-column">
+                                <div class="column-header approved">
+                                    <span class="column-icon"><i class='bx bx-check-circle'></i></span>
+                                    <h3>Confirmed</h3>
+                                    <span class="column-count" id="approved-count">0</span>
+                                </div>
+                                <div class="column-body approved-appointments">
+                                    <!-- Approved appointment cards go here -->
+                                </div>
+                            </div>
+
+                            <!-- Patient List Column -->
+                            <div class="appointments-column">
+                                <div class="column-header patients">
+                                    <span class="column-icon"><i class='bx bx-group'></i></span>
+                                    <h3>Patients</h3>
+                                    <span class="column-count" id="patients-count">0</span>
+                                </div>
+                                <div class="column-body patient-list-content">
+                                    <!-- Patient cards go here -->
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="appointments" id="approved-appointments">
-                            <h3>Approved Appointments</h3>
-                            <div class="approved-appointments"></div>
-                        </div>
+                        <hr style="margin: 40px 0;">
 
+                        <!-- Schedule Management (keep as-is or below the columns) -->
                         <div class="appointments">
                             <h3>Schedule Management</h3>
                             <form id="appointment-status-form" class="status-management-form">
@@ -119,13 +149,6 @@ if (!isset($_SESSION['LOGGED_IN_USER']) || $_SESSION['LOGGED_IN_USER'] !== true 
                                 <button class="book-btn" type="submit">Update Status</button>
                                 <p id="status-update-feedback" class="booking-feedback"></p>
                             </form>
-                        </div>
-
-                        <hr>
-
-                        <div class="patient-list">
-                            <h3>Patient List</h3>
-                            <div class="patient-list-content"></div>
                         </div>
                     </div>
 
