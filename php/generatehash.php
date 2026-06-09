@@ -6,3 +6,4 @@ $hash = password_hash("password", PASSWORD_DEFAULT);
 echo "Generated hash: " . $hash . "\n";
 
 
+?>

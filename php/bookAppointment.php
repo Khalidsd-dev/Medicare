@@ -32,7 +32,7 @@ if (!$doctorId || !$appointmentDate || !$appointmentTime) {
 try {
     $pdo = require __DIR__ . '/db_connect.php';
 
-    // Verify doctor exists to avoid FK constraint failure
+    // Verify doctor exists 
     $checkDoctor = $pdo->prepare('SELECT doctor_id FROM doctors WHERE doctor_id = ?');
     $checkDoctor->execute([$doctorId]);
     $doctorRow = $checkDoctor->fetch(PDO::FETCH_ASSOC);

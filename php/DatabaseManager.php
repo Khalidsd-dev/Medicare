@@ -1,7 +1,6 @@
 <?php
 require_once "database.php";
 include_once "Executor.php";
-require_once "appointmentManager.php";
 
 
 
@@ -22,7 +21,6 @@ private $request;
 private $response;
 
 private $database;
-private $appointmentManager;
 
 public function __construct() {
     // The constructor is currently empty, but it can be used to initialize any necessary properties or dependencies in the future.
@@ -36,9 +34,6 @@ private function verifyPassword(string $password, $passwordhash) {
     return password_verify($password, $passwordhash);
 }
 
-private function needsRehash(string $hash): bool {
-    return password_needs_rehash($hash, PASSWORD_DEFAULT);
-}
 
 
 
@@ -107,31 +102,6 @@ public function viewAppointments($patientId) {
     }
 }
 
-public function viewDoctorAppointments($doctorId) {
-    try {
-        $pdo = require __DIR__ . '/db_connect.php';
-        if (!($pdo instanceof PDO)) {
-            throw new \RuntimeException('Database connection did not return a PDO instance');
-        }
-
-        $stmt = $pdo->prepare(
-            "SELECT a.*, u.first_name AS patient_first_name, u.last_name AS patient_last_name " .
-            "FROM appointments a " .
-            "JOIN users u ON a.patient_id = u.user_id " .
-            "WHERE a.doctor_id = ? " .
-            "ORDER BY a.appointment_date ASC, a.appointment_time ASC"
-        );
-        $stmt->execute([$doctorId]);
-
-        if ($stmt->rowCount() > 0) {
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        }
-
-        return false;
-    } catch (\Throwable $th) {
-        die("Database connection failed: " . $th->getMessage());
-    }
-}
 
 public function updateAppointmentStatus($appointmentId, $doctorId, $status) {
     try {

@@ -19,14 +19,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $executor = new Executor();
     $user = $executor->login($email, $password);
     
-// if loginresult fetch array contains email and password that match the input, then login successful, else login failed
 
+// :(
 if (!$user) {
     header('Location: login.php?error=invalid');
     exit();
 }
 
-// SUCCESS PATH ONLY BELOW
+// SUCCESS OPERATION :)
 session_regenerate_id(true);
 
 $_SESSION['LOGGED_IN_USER'] = true;
